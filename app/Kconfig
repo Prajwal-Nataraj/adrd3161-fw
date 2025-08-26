@@ -1,0 +1,47 @@
+# Copyright (c) 2025 Analog Devices, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+menu "Zephyr"
+source "Kconfig.zephyr"
+endmenu
+
+menu "ADRD motor drive"
+
+config SHELL_TMC_PARAMS
+    bool "tmc_params shell command"
+    depends on SHELL
+
+config TMC_PARAMS_REFSW
+    bool "Use parameters relating to reference switch"
+    default n
+
+config TMC_PARAMS_ABN1
+    bool "Use parameters relating to ABN1 encoder"
+    default y
+    
+config TMC_PARAMS_ABN2
+    bool "Use parameters relating to ABN2 encoder"
+    default n
+
+config TMC_PARAMS_SPI
+    bool "Use parameters relating to SPI encoder"
+    default n
+    
+config TMC_PARAMS_HALL
+    bool "Use parameters relating to Hall encoder"
+    default y
+
+config TMC_PARAMS_STEPDIR
+    # ioan: would we *ever* need this on this board?
+    bool "Use parameters relating to STEP/DIR input"
+    default n
+
+config TMC_RWE_PARAM_NAMES
+    bool "Provide name strings for TMC9660 RWE parameters"
+    depends on SHELL_TMC_PARAMS
+
+config CIA402_THREAD_STACK_SIZE
+    int "CiA 402 thread stack size"
+    default 1024
+
+endmenu

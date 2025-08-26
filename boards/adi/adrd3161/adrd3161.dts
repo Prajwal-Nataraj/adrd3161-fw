@@ -1,0 +1,136 @@
+/*
+ * Copyright (c) 2024 Analog Devices, Inc.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/dts-v1/;
+
+#include <adi/max32/max32662.dtsi>
+#include <adi/max32/max32662-pinctrl.dtsi>
+#include <zephyr/dt-bindings/gpio/adi-max32-gpio.h>
+
+/ {
+	soc {
+		sram_all: memory@20000000 {
+			compatible = "mmio-sram";
+			reg = <0x20000000 DT_SIZE_K(80)>;
+		};
+    };
+};
+
+/ {
+    model = "Analog Devices ADRD3161 Motor Control module";
+    compatible = "adi,adrd3161";
+
+    chosen {
+        zephyr,console = &uart0;
+        zephyr,shell-uart = &uart0;
+        zephyr,sram = &sram_all;
+        zephyr,flash = &flash0;
+        zephyr,canbus = &can0;
+    };
+
+    leds {
+        compatible = "gpio-leds";
+        status = "okay";
+
+        led_status: led-status {
+            gpios = <&gpio0 14 GPIO_ACTIVE_HIGH>;
+            label = "Status LED";
+            status = "okay";
+        };
+        
+    };
+    
+    buttons {
+        compatible = "gpio-keys";
+        status = "okay";
+        
+        /* Can also be used as output to flash fault LED. */
+        fault: fault {
+            gpios = <&gpio0 20 (GPIO_ACTIVE_LOW)>;
+            label = "Fault";
+            status = "okay";
+        };
+    };
+
+    aliases {
+        /* Compatibility with samples */
+        led0 = &led_status;
+        watchdog0 = &wdt0;
+    };
+};
+
+&clk_erfo {
+    clock-frequency = < 24576000 >;
+};
+
+/* UART0 - debug (A) / TMC (B) UART */
+&uart0 {
+    pinctrl-0 = <&uart0a_tx_p0_10 &uart0a_rx_p0_11>;
+    pinctrl-names = "default";
+    current-speed = <115200>;
+    data-bits = <8>;
+    parity = "none";
+    status = "okay";
+};
+
+&spi0 {
+    status = "okay";
+    pinctrl-0 = <&spi0a_copi_p0_3 &spi0a_cito_p0_2 &spi0a_sck_p0_4 &spi0a_ts0_p0_5>;
+    pinctrl-names = "default";
+    cs-gpios = <&gpio0 5 GPIO_ACTIVE_LOW>;
+    
+    tmc9660: tmc9660_spi@0 {
+        compatible = "adi,tmc9660-spi";
+        reg = <0>;
+        spi-max-frequency = <10000000>;
+        label = "TMC9660";
+        status = "okay";
+    };
+};
+
+&i2c0 {
+	status = "okay";
+	pinctrl-0 = <&i2c0a_scl_p0_12 &i2c0a_sda_p0_13>;
+	pinctrl-names = "default";
+
+    max31827@1a {
+        compatible = "adi,max31827";
+        reg = <0x1a>;
+        label = "MAX31827";
+        status = "okay";
+    };
+};
+
+&can0 {
+    status = "okay";
+    pinctrl-0 = <&can0b_rx_p0_6 &can0b_tx_p0_9>;
+    pinctrl-names = "default";
+    bitrate = <500000>;
+    sample-point = <850>;
+};
+
+&clk_ipo {
+    status = "okay";
+};
+
+&dma0 {
+    status = "okay";
+};
+
+&gpio0 {
+    status = "okay";
+};
+
+&trng {
+    status = "okay";
+};
+
+&wdt0 {
+    status = "okay";
+};
+
+&clk_ertco {
+    status = "okay";
+};

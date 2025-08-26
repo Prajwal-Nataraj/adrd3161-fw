@@ -1,0 +1,18 @@
+# Copyright (c) 2025 Analog Devices, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+DT_COMPAT_ADI_TMC9660_SPI := adi,tmc9660-spi
+
+config TMC9660_SPI
+	bool "TMC9660, communication over SPI"
+	depends on SPI
+	select APPLICATION_DEFINED_SYSCALL
+	default $(dt_compat_enabled,$(DT_COMPAT_ADI_TMC9660_SPI))
+	help
+		TMC9660, communication over SPI
+
+module = TMC9660_SPI
+module-dep = LOG
+module-str = Log level for TMC9660 SPI driver
+module-help = Sets log level for TMC9660 SPI driver
+source "subsys/logging/Kconfig.template.log_config"

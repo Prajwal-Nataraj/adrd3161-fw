@@ -1,0 +1,25 @@
+manifest:
+  version: 0.7
+  remotes:
+    - name: analogdevicesinc
+      url-base: https://github.com/analogdevicesinc
+    - name: zephyrproject-rtos
+      url-base: https://github.com/zephyrproject-rtos
+    - name: NTURacingTeam
+      url-base: https://github.com/NTURacingTeam
+  defaults:
+    remote: zephyrproject-rtos
+  projects:
+    - name: zephyr
+      remote: analogdevicesinc
+      revision: 3e934bc2553bf657b22fb59455446b4b50c3fa91
+      import:
+        name-allowlist:
+          - hal_adi
+          - cmsis_6
+    - name: canopennode
+      remote: NTURacingTeam
+      revision: 2487004b06e035efe211ee1a80e5b19a63530d78
+      path: modules/canopennode
+  self:
+    path: adrd3161-fw

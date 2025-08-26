@@ -1,0 +1,12 @@
+board:
+  name: adrd3161
+  full_name: ADRD3161 Motor Control module
+  vendor: adi
+  revision:
+    format: letter
+    default: B
+    revisions:
+    - name: A
+    - name: B
+  socs:
+  - name: max32662

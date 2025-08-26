@@ -1,0 +1,165 @@
+{
+    "folders": [
+        {
+            "name": "adrd3161-fw",
+            "path": "."
+        },
+        {
+            "name": "zephyr",
+            "path": "../zephyr"
+        },
+        {
+            "name": "canopennode",
+            "path": "../modules/canopennode"
+        }
+    ],
+    "settings": {
+        // Hush CMake
+        "cmake.configureOnOpen": false,
+
+        // IntelliSense
+        "C_Cpp.default.compilerPath" : "${userHome}/zephyr-sdk-0.17.0/arm-zephyr-eabi/bin/arm-zephyr-eabi-gcc",
+        "C_Cpp.default.compileCommands": "${workspaceFolder:adrd3161-fw}/build/compile_commands.json",
+
+        "files.associations": {
+			"*.h": "c",
+			"*.ipp": "c",
+			"optional": "c",
+			"ratio": "c",
+			"system_error": "c",
+			"array": "c",
+			"functional": "c",
+			"tuple": "c",
+			"type_traits": "c",
+			"utility": "c",
+			"variant": "c",
+			"regex": "c"
+		},
+
+        "C_Cpp.default.includePath": [
+            "${workspaceFolder:zephyr}/include"
+        ],
+
+        "kconfig.python": "${workspaceFolder:zephyr}/../.venv/bin",
+        "kconfig.zephyr.base": "${workspaceFolder:zephyr}",
+        "cortex-debug.armToolchainPath": "${userHome}/zephyr-sdk-0.17.0/arm-zephyr-eabi/bin/",
+        "cortex-debug.armToolchainPrefix": "arm-zephyr-eabi",
+		"cortex-debug.openocdPath": "/MaximSDK/Tools/OpenOCD/openocd",
+		"cfs.configureWorkspace": "Never",
+    },
+    "tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "West Build",
+				"type": "shell",
+				"group": {
+					"kind": "build",
+					"isDefault": true
+				},
+				"command": "${userHome}/zephyrproject/.venv/bin/west",
+				"args": [
+					"build",
+					"-p",
+					"auto",
+					"-b",
+					"adrd3161"
+				],
+				"problemMatcher": [
+					"$gcc"
+				],
+			},
+			{
+				"label": "West Configurable Build",
+				"type": "shell",
+				"group": {
+					"kind": "build",
+				},
+				"command": "${userHome}/zephyrproject/.venv/bin/west",
+				"args": [
+					"build",
+					"-p",
+					"${input:pristine}",
+					"-b",
+					"${input:board}"
+				],
+				"problemMatcher": [
+					"$gcc"
+				]
+			},
+			{
+				"label": "West Flash",
+				"type": "shell",
+				"command": "${userHome}/zephyrproject/.venv/bin/west",
+				"args": [
+					"flash",
+                    "--openocd-search", "/MaximSDK/Tools/OpenOCD/scripts/",
+                    "--openocd", "/MaximSDK/Tools/OpenOCD/openocd"
+				],
+				"problemMatcher": [
+					"$gcc"
+				]
+			}
+		],
+		"inputs": [
+			{
+				"id": "board",
+				"type": "promptString",
+				"default": "adrd3161",
+				"description": "See https://docs.zephyrproject.org/latest/boards/index.html"
+			},
+			{
+				"id": "pristine",
+				"type": "pickString",
+				"description": "Choose when to run a pristine build",
+				"default": "auto",
+				"options": [
+					"auto",
+					"always",
+					"never"
+				]
+			}
+		]
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"name": "Launch",
+				"device": "max32662",
+				"cwd": "${workspaceFolder:adrd3161-fw}",
+				"executable": "build/zephyr/zephyr.elf",
+				"request": "launch",
+				"type": "cortex-debug",
+				"runToEntryPoint": "main",
+				"servertype": "openocd",
+				"gdbPath": "${userHome}/zephyr-sdk-0.17.0/arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb",
+				"preLaunchTask": "West Build",
+                "searchDir": ["/MaximSDK/Tools/OpenOCD/scripts/"],
+                "configFiles": ["interface/cmsis-dap.cfg", "target/max32662.cfg"]
+			},
+			{
+				"name": "Attach",
+				"device": "max32662",
+				"cwd": "${workspaceFolder:adrd3161-fw}",
+				"executable": "build/zephyr/zephyr.elf",
+				"request": "attach",
+				"type": "cortex-debug",
+				"runToEntryPoint": "main",
+				"servertype": "openocd",
+				"gdbPath": "${userHome}/zephyr-sdk-0.17.0/arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb",
+                "searchDir": ["/MaximSDK/Tools/OpenOCD/scripts/"],
+                "configFiles": ["interface/cmsis-dap.cfg", "target/max32662.cfg"]
+			},
+		]
+	},
+	"extensions": {
+		"recommendations": [
+			"ms-vscode.cpptools-extension-pack",
+			"ms-python.python",
+			"ms-vscode.vscode-embedded-tools",
+			"ms-vscode.vscode-serial-monitor",
+			"marus25.cortex-debug"
+		]
+	}
+}
