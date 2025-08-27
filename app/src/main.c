@@ -18,7 +18,6 @@
 #include "cia402_impl.h"
 #include "OD.h"
 #include "tmc9660_params.h"
-#include "storage.h"
 
 LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);
 
@@ -102,7 +101,7 @@ extern inline void cia402_impl_mop_tpdo(struct cia402*) {
 extern inline bool cia402_impl_initialize(struct cia402*) {
     // Load parameters from flash
     //tmc_params_save(g_tmc9660); // BODGEEEEE
-    int ret = tmc_params_load(g_tmc9660);
+    int ret = 0; // tmc_params_load(g_tmc9660);
 
     // Make sure the motor is stopped, again
     tmc9660_set_param_retry(g_tmc9660, COMMUTATION_MODE, 0, 3);
@@ -346,7 +345,7 @@ int main()
     tmc9660_motor_stop(g_tmc9660);
 
     // Initialize nonvolatile storage
-    storage_init();
+    // storage_init();
 
     // Initialize and read DIP switches for CAN and I2C ID
     err = gpio_pin_configure_dt(&dip1, GPIO_INPUT);
@@ -399,6 +398,8 @@ int main()
     OD_extension_init(OD_ENTRY_H6041_statusword, &statusword_ext);
     OD_extension_init(OD_ENTRY_H6061_modesOfOperationDisplay, &mopd_ext);
     OD_extension_init(OD_ENTRY_H6040_controlword, &cw_ext);
+
+    tmc_params_init(); // Set up extensions for TMC parameters
 
     cia402_init(&cia402);
 

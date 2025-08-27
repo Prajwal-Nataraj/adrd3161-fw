@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef TMC9660_PARAMS_H_
-#define TMC9660_PARAMS_H_
+#ifndef TMC_PARAMS_H_
+#define TMC_PARAMS_H_
 
-/* Read all RWE parameters from TMC9660 and save them to microcontroller flash */
-int tmc_params_load(const struct device *dev);
+/**
+ * @brief Initialize TMC parameter storage, bind to CANopen OD
+ */
+void tmc_params_init(void);
 
-/* Write all RWE parameters to TMC9660 using values from microcontroller flash */
-int tmc_params_save(const struct device *dev);
+#endif /* TMC_PARAMS_H_ */
 
-#endif /* TMC9660_PARAMS_H_ */
