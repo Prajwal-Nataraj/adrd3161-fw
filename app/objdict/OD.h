@@ -507,7 +507,8 @@ typedef struct {
     int32_t x2149_ACTUAL_VELOCITY_BIQUAD_FILTER_BCOEFF_2;
 } OD_PERSIST_TMC_t;
 
-typedef struct {
+// typedef struct {
+typedef union {
     int32_t x2004_COMMUTATION_MODE;
     int32_t x200D_ADC_I0_RAW;
     int32_t x200E_ADC_I1_RAW;
