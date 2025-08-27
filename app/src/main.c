@@ -440,7 +440,7 @@ int main()
             int32_t supply_voltage;
             tmc9660_get_param(g_tmc9660, SUPPLY_VOLTAGE, &supply_voltage);
             //CO_LOCK_OD(CO->CANmodule);
-            OD_set_u16(OD_ENTRY_H2122_TMC9660SUPPLY_VOLTAGE, 0, (uint16_t) supply_voltage, false);
+            OD_set_u16(OD_ENTRY_H2122_SUPPLY_VOLTAGE, 0, (uint16_t) supply_voltage, false);
             //CO_UNLOCK_OD(CO->CANmodule);
         }
 

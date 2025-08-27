@@ -13,8 +13,6 @@
 #include "301/CO_ODinterface.h"
 #include "OD.h"
 
-#include <app_version.h>
-
 #if CO_VERSION_MAJOR < 4
 #error This Object dictionary is compatible with CANopenNode V4.0 and above!
 #endif
@@ -27,16 +25,16 @@ OD_ATTR_PERSIST_COMM OD_PERSIST_COMM_t OD_PERSIST_COMM = {
     .x1005_COB_ID_SYNCMessage = 0x00000080,
     .x1006_communicationCyclePeriod = 0x00000000,
     .x1007_synchronousWindowLength = 0x00000000,
-    .x1008_manufacturerDeviceName = {'A', 'D', 'R', 'D', '3', '1', '6', '1', ' ', 'M', 'O', 'T', 'O', 'R', ' ', 'C', 'O', 'N', 'T', 'R', 'O', 'L', 0},
-    .x1009_manufacturerHardwareVersion = {'R', 'e', 'v', 'B', 0},
-    .x100A_manufacturerSoftwareVersion = STRINGIFY(APP_BUILD_VERSION),
+    .x1008_manufacturerDeviceName = {'A', 'D', 'R', 'D', '3', '1', '6', '1', 0},
+    .x1009_manufacturerHardwareVersion = {'R', 'e', 'v', 'C', 0},
+    .x100A_manufacturerSoftwareVersion = {'G', 'I', 'T', '_', 'R', 'E', 'V', 'I', 'S', 'I', 'O', 'N', 0},
     .x1012_COB_IDTimeStampObject = 0x00000100,
     .x1014_COB_ID_EMCY = 0x00000080,
     .x1015_inhibitTimeEMCY = 0x0000,
     .x1017_producerHeartbeatTime = 0x00C8,
     .x1018_identity = {
         .highestSub_indexSupported = 0x04,
-        .vendor_ID = 0x286,
+        .vendor_ID = 0x00000286,
         .productCode = 0x00000C59,
         .revisionNumber = 0x00000002,
         .serialNumber = 0x00000000
@@ -237,7 +235,6 @@ OD_ATTR_RAM OD_RAM_t OD_RAM = {
         .COB_IDClientToServerRx = 0x00000600,
         .COB_IDServerToClientTx = 0x00000580
     },
-    .x2122_TMC9660SUPPLY_VOLTAGE = 0x0000,
     .x6040_controlword = 0x0000,
     .x6041_statusword = 0x0000,
     .x6060_modesOfOperation = 0,
@@ -257,6 +254,301 @@ OD_ATTR_RAM OD_RAM_t OD_RAM = {
     .x60FF_targetVelocity = 0,
     .x6502_supportedDriveModes = 0x0000038D,
     .x67FF_singleDeviceType = 0x00020192
+};
+
+OD_ATTR_PERSIST_TMC OD_PERSIST_TMC_t OD_PERSIST_TMC = {
+    .x2000_MOTOR_TYPE = 0,
+    .x2001_MOTOR_POLE_PAIRS = 1,
+    .x2002_MOTOR_DIRECTION = 0,
+    .x2003_MOTOR_PWM_FREQUENCY = 25000,
+    .x2005_OUTPUT_VOLTAGE_LIMIT = 8000,
+    .x2006_MAX_TORQUE = 2000,
+    .x2007_MAX_FLUX = 2000,
+    .x2008_PWM_SWITCHING_SCHEME = 1,
+    .x2009_IDLE_MOTOR_PWM_BEHAVIOR = 1,
+    .x200C_ADC_SHUNT_TYPE = 4,
+    .x2011_CSA_GAIN_ADC_I0_TO_ADC_I2 = 1,
+    .x2012_CSA_GAIN_ADC_I3 = 1,
+    .x2013_CSA_FILTER_ADC_I0_TO_ADC_I2 = 0,
+    .x2014_CSA_FILTER_ADC_I3 = 0,
+    .x2015_CURRENT_SCALING_FACTOR = 520,
+    .x2016_PHASE_UX1_ADC_MAPPING = 0,
+    .x2017_PHASE_VX2_ADC_MAPPING = 1,
+    .x2018_PHASE_WY1_ADC_MAPPING = 2,
+    .x2019_PHASE_Y2_ADC_MAPPING = 3,
+    .x201A_ADC_I0_SCALE = 1024,
+    .x201B_ADC_I1_SCALE = 1024,
+    .x201C_ADC_I2_SCALE = 1024,
+    .x201D_ADC_I3_SCALE = 1024,
+    .x201E_ADC_I0_INVERTED = 1,
+    .x201F_ADC_I1_INVERTED = 1,
+    .x2020_ADC_I2_INVERTED = 1,
+    .x2021_ADC_I3_INVERTED = 1,
+    .x2022_ADC_I0_OFFSET = 0,
+    .x2023_ADC_I1_OFFSET = 0,
+    .x2024_ADC_I2_OFFSET = 0,
+    .x2025_ADC_I3_OFFSET = 0,
+    .x202E_OPENLOOP_CURRENT = 1000,
+    .x202F_OPENLOOP_VOLTAGE = 0,
+    .x2032_ACCELERATION_FF_GAIN = 8,
+    .x2033_ACCELERATION_FF_SHIFT = 4,
+    .x2034_RAMP_ENABLE = 0,
+    .x2035_DIRECT_VELOCITY_MODE = 1,
+    .x2036_RAMP_AMAX = 1000,
+    .x2037_RAMP_A1 = 8000,
+    .x2038_RAMP_A2 = 4000,
+    .x2039_RAMP_DMAX = 1000,
+    .x203A_RAMP_D1 = 8000,
+    .x203B_RAMP_D2 = 8000,
+    .x203C_RAMP_VMAX = 134217727,
+    .x203D_RAMP_V1 = 0,
+    .x203E_RAMP_V2 = 0,
+    .x203F_RAMP_VSTART = 0,
+    .x2040_RAMP_VSTOP = 1,
+    .x2041_RAMP_TVMAX = 0,
+    .x2042_RAMP_TZEROWAIT = 0,
+    .x2043_ACCELERATION_FEEDFORWARD_ENABLE = 0,
+    .x2044_VELOCITY_FEEDFORWARD_ENABLE = 0,
+    .x204B_HALL_SECTOR_OFFSET = 0,
+    .x204C_HALL_FILTER_LENGTH = 0,
+    .x204D_HALL_POSITION_0_OFFSET = 0,
+    .x204E_HALL_POSITION_60_OFFSET = 10922,
+    .x204F_HALL_POSITION_120_OFFSET = 21845,
+    .x2050_HALL_POSITION_180_OFFSET = -32768,
+    .x2051_HALL_POSITION_240_OFFSET = -21846,
+    .x2052_HALL_POSITION_300_OFFSET = -10923,
+    .x2053_HALL_INVERT_DIRECTION = 0,
+    .x2054_HALL_EXTRAPOLATION_ENABLE = 0,
+    .x2055_HALL_PHI_E_OFFSET = 0,
+    .x205A_ABN_1_STEPS = 65536,
+    .x205B_ABN_1_DIRECTION = 0,
+    .x205C_ABN_1_INIT_METHOD = 0,
+    .x205E_ABN_1_INIT_DELAY = 1000,
+    .x205F_ABN_1_INIT_VELOCITY = 5,
+    .x2060_ABN_1_N_CHANNEL_PHI_E_OFFSET = 0,
+    .x2061_ABN_1_N_CHANNEL_INVERTED = 0,
+    .x2062_ABN_1_N_CHANNEL_FILTERING = 0,
+    .x206D_TORQUE_P = 50,
+    .x206E_TORQUE_I = 100,
+    .x206F_FLUX_P = 50,
+    .x2070_FLUX_I = 100,
+    .x2071_SEPARATE_TORQUE_FLUX_PI_PARAMTERS = 0,
+    .x2072_CURRENT_NORM_P = 0,
+    .x2073_CURRENT_NORM_I = 1,
+    .x207B_VELOCITY_SENSOR_SELECTION = 0,
+    .x207F_VELOCITY_P = 800,
+    .x2080_VELOCITY_I = 1,
+    .x2081_VELOCITY_NORM_P = 2,
+    .x2082_VELOCITY_NORM_I = 2,
+    .x2085_VELOCITY_SCALING_FACTOR = 1,
+    .x2087_VELOCITY_LOOP_DOWNSAMPLING = 5,
+    .x2088_VELOCITY_REACHED_THRESHOLD = 0,
+    .x2089_VELOCITY_METER_SWITCH_THRESHOLD = 2000,
+    .x208A_VELOCITY_METER_SWITCH_HYSTERESIS = 500,
+    .x208E_POSITION_SENSOR_SELECTION = 0,
+    .x2091_POSITION_SCALING_FACTOR = 1024,
+    .x2092_POSITION_P = 5,
+    .x2093_POSITION_I = 0,
+    .x2094_POSITION_NORM_P = 1,
+    .x2095_POSITION_NORM_I = 1,
+    .x2098_STOP_ON_POSITION_DEVIATION = 0,
+    .x2099_POSITION_LOOP_DOWNSAMPLING = 0,
+    .x209B_POSITION_LIMIT_LOW = -2147483648,
+    .x209C_POSITION_LIMIT_HIGH = 2147483647,
+    .x209D_POSITION_REACHED_THRESHOLD = 0,
+    .x20A1_REFERENCE_SWITCH_ENABLE = 0,
+    .x20A2_REFERENCE_SWITCH_POLARITY_AND_SWAP = 0,
+    .x20A3_REFERENCE_SWITCH_LATCH_SETTINGS = 0,
+    .x20A4_EVENT_STOP_SETTINGS = 0,
+    .x20A5_REFERENCE_SWITCH_SEARCH_MODE = 0,
+    .x20A6_REFERENCE_SWITCH_SEARCH_SPEED = 0,
+    .x20A7_REFERENCE_SWITCH_SPEED = 0,
+    .x20AE_ABN_2_STEPS = 1024,
+    .x20AF_ABN_2_DIRECTION = 0,
+    .x20B0_ABN_2_GEAR_RATIO = 1,
+    .x20B1_ABN_2_ENABLE = 0,
+    .x20B5_SPI_ENCODE_CS_SETTLE_DELAY_TIME = 0,
+    .x20B6_SPI_ENCODER_CS_IDLE_DELAY_TIME = 0,
+    .x20B7_SPI_ENCODER_MAIN_TRANSFER_CMD_SIZE = 1,
+    .x20B8_SPI_ENCODER_SECONDARY_TRANSFER_CMD_SIZE = 0,
+    .x20B9_SPI_ENCODER_TRANSFER_DATA_3_0 = 0x00000000,
+    .x20BA_SPI_ENCODER_TRANSFER_DATA_7_4 = 0x00000000,
+    .x20BB_SPI_ENCODER_TRANSFER_DATA_11_8 = 0x00000000,
+    .x20BC_SPI_ENCODER_TRANSFER_DATA_15_12 = 0x00000000,
+    .x20BD_SPI_ENCODER_TRANSFER = 0,
+    .x20BE_SPI_ENCODER_POSITION_COUNTER_MASK = 0x00000000,
+    .x20BF_SPI_ENCODER_POSITION_COUNTER_SHIFT = 0,
+    .x20C2_SPI_ENCODER_INITIALIZATION_METHOD = 0,
+    .x20C3_SPI_ENCODER_DIRECTION = 0,
+    .x20C4_SPI_ENCODER_OFFSET = 0x00000000,
+    .x20C5_SPI_LUT_CORRECTION_ENABLE = 0,
+    .x20CD_STEP_DIR_STEP_DIVIDER_SHIFT = 0,
+    .x20D4_BRAKE_CHOPPER_ENABLE = 0,
+    .x20D5_BRAKE_CHOPPER_VOLTAGE_LIMIT = 260,
+    .x20D6_BRAKE_CHOPPER_HYSTERESIS = 5,
+    .x20D8_RELEASE_BRAKE = 0,
+    .x20D9_BRAKE_RELEASING_DUTY_CYCLE = 75,
+    .x20DA_BRAKE_HOLDING_DUTY_CYCLE = 11,
+    .x20DB_BRAKE_RELEASING_DURATION = 80,
+    .x20DD_INVERT_BRAKE_OUTPUT = 0,
+    .x20E0_THERMAL_WINDING_TIME_CONSTANT_1 = 3000,
+    .x20E1_IIT_LIMIT_1 = 0xFFFFFFFF,
+    .x20E3_THERMAL_WINDING_TIME_CONSTANT_2 = 6000,
+    .x20E4_IIT_LIMIT_2 = 0xFFFFFFFF,
+    .x20E9_PWM_L_OUTPUT_POLARITY = 0,
+    .x20EA_PWM_H_OUTPUT_POLARITY = 0,
+    .x20EB_BREAK_BEFORE_MAKE_TIME_LOW_UVW = 0,
+    .x20EC_BREAK_BEFORE_MAKE_TIME_HIGH_UVW = 0,
+    .x20ED_BREAK_BEFORE_MAKE_TIME_LOW_Y2 = 0,
+    .x20EE_BREAK_BEFORE_MAKE_TIME_HIGH_Y2 = 0,
+    .x20EF_USE_ADAPTIVE_DRIVE_TIME_UVW = 1,
+    .x20F0_USE_ADAPTIVE_DRIVE_TIME_Y2 = 1,
+    .x20F1_DRIVE_TIME_SINK_UVW = 255,
+    .x20F2_DRIVE_TIME_SOURCE_UVW = 255,
+    .x20F3_DRIVE_TIME_SINK_Y2 = 255,
+    .x20F4_DRIVE_TIME_SOURCE_Y2 = 255,
+    .x20F5_UVW_SINK_CURRENT = 4,
+    .x20F6_UVW_SOURCE_CURRENT = 4,
+    .x20F7_Y2_SINK_CURRENT = 4,
+    .x20F8_Y2_SOURCE_CURRENT = 4,
+    .x20F9_BOOTSTRAP_CURRENT_LIMIT = 7,
+    .x20FA_UNDERVOLTAGE_PROTECTION_SUPPLY_LEVEL = 0,
+    .x20FB_UNDERVOLTAGE_PROTECTION_VDRV_ENABLE = 1,
+    .x20FC_UNDERVOLTAGE_PROTECTION_BST_UVW_ENABLE = 1,
+    .x20FD_UNDERVOLTAGE_PROTECTION_BST_Y2_ENABLE = 1,
+    .x20FE_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_ENABLE = 1,
+    .x20FF_OVERCURRENT_PROTECTION_UVW_HIGH_SIDE_ENABLE = 1,
+    .x2100_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_ENABLE = 1,
+    .x2101_OVERCURRENT_PROTECTION_Y2_HIGH_SIDE_ENABLE = 1,
+    .x2102_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_THRESHOLD = 0,
+    .x2103_OVERCURRENT_PROTECTION_UVW_HIGH_SIDE_THRESHOLD = 0,
+    .x2104_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_THRESHOLD = 0,
+    .x2105_OVERCURRENT_PROTECTION_Y2_HIGH_SIDE_THRESHOLD = 0,
+    .x2106_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_BLANKING = 2,
+    .x2107_OVERCURRENT_PROTECTION_UVW_HIGH_SIDE_BLANKING = 2,
+    .x2108_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_BLANKING = 2,
+    .x2109_OVERCURRENT_PROTECTION_Y2_HIGH_SIDE_BLANKING = 2,
+    .x210A_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_DEGLITCH = 6,
+    .x210B_OVERCURRENT_PROTECTION_UVW_HIGH_SIDE_DEGLITCH = 6,
+    .x210C_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_DEGLITCH = 6,
+    .x210D_OVERCURRENT_PROTECTION_Y2_HIGH_SIDE_DEGLITCH = 6,
+    .x210E_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_USE_VDS = 1,
+    .x210F_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_USE_VDS = 1,
+    .x2110_VGS_SHORT_ON_PROTECTION_UVW_LOW_SIDE_ENABLE = 1,
+    .x2111_VGS_SHORT_OFF_PROTECTION_UVW_LOW_SIDE_ENABLE = 1,
+    .x2112_VGS_SHORT_ON_PROTECTION_UVW_HIGH_SIDE_ENABLE = 1,
+    .x2113_VGS_SHORT_OFF_PROTECTION_UVW_HIGH_SIDE_ENABLE = 1,
+    .x2114_VGS_SHORT_ON_PROTECTION_Y2_LOW_SIDE_ENABLE = 1,
+    .x2115_VGS_SHORT_OFF_PROTECTION_Y2_LOW_SIDE_ENABLE = 1,
+    .x2116_VGS_SHORT_ON_PROTECTION_Y2_HIGH_SIDE_ENABLE = 1,
+    .x2117_VGS_SHORT_OFF_PROTECTION_Y2_HIGH_SIDE_ENABLE = 1,
+    .x2118_VGS_SHORT_PROTECTION_UVW_BLANKING = 1,
+    .x2119_VGS_SHORT_PROTECTION_Y2_BLANKING = 1,
+    .x211A_VGS_SHORT_PROTECTION_UVW_DEGLITCH = 1,
+    .x211B_VGS_SHORT_PROTECTION_Y2_DEGLITCH = 1,
+    .x211E_GDRV_RETRY_BEHAVIOUR = 0,
+    .x211F_DRIVE_FAULT_BEHAVIOUR = 0,
+    .x2120_FAULT_HANDLER_NUMBER_OF_RETRIES = 5,
+    .x2123_SUPPLY_OVERVOLTAGE_WARNING_THRESHOLD = 480,
+    .x2124_SUPPLY_UNDERVOLTAGE_WARNING_THRESHOLD = 50,
+    .x2126_EXTERNAL_TEMPERATURE_SHUTDOWN_THRESHOLD = 65535,
+    .x2127_EXTERNAL_TEMPERATURE_WARNING_THRESHOLD = 65535,
+    .x2129_CHIP_TEMPERATURE_SHUTDOWN_THRESHOLD = 65535,
+    .x212A_CHIP_TEMPERATURE_WARNING_THRESHOLD = 65535,
+    .x2134_FIELDWEAKENING_I = 0,
+    .x2136_FIELDWEAKENING_VOLTAGE_THRESHOLD = 32767,
+    .x213E_TARGET_TORQUE_BIQUAD_FILTER_ENABLE = 0,
+    .x213F_TARGET_TORQUE_BIQUAD_FILTER_ACOEFF_1 = 0,
+    .x2140_TARGET_TORQUE_BIQUAD_FILTER_ACOEFF_2 = 0,
+    .x2141_TARGET_TORQUE_BIQUAD_FILTER_BCOEFF_0 = 1048576,
+    .x2142_TARGET_TORQUE_BIQUAD_FILTER_BCOEFF_1 = 0,
+    .x2143_TARGET_TORQUE_BIQUAD_FILTER_BCOEFF_2 = 0,
+    .x2144_ACTUAL_VELOCITY_BIQUAD_FILTER_ENABLE = 1,
+    .x2145_ACTUAL_VELOCITY_BIQUAD_FILTER_ACOEFF_1 = 1849195,
+    .x2146_ACTUAL_VELOCITY_BIQUAD_FILTER_ACOEFF_2 = 15961938,
+    .x2147_ACTUAL_VELOCITY_BIQUAD_FILTER_BCOEFF_0 = 3665,
+    .x2148_ACTUAL_VELOCITY_BIQUAD_FILTER_BCOEFF_1 = 7329,
+    .x2149_ACTUAL_VELOCITY_BIQUAD_FILTER_BCOEFF_2 = 3665
+};
+
+OD_ATTR_APP_SHADOW OD_APP_SHADOW_t OD_APP_SHADOW = {
+    .x2004_COMMUTATION_MODE = 0,
+    .x200D_ADC_I0_RAW = 0,
+    .x200E_ADC_I1_RAW = 0,
+    .x200F_ADC_I2_RAW = 0,
+    .x2010_ADC_I3_RAW = 0,
+    .x2026_ADC_I0 = 0,
+    .x2027_ADC_I1 = 0,
+    .x2028_ADC_I2 = 0,
+    .x2029_ADC_I3 = 0,
+    .x202D_OPENLOOP_ANGLE = 0,
+    .x2045_RAMP_VELOCITY = 0,
+    .x2046_RAMP_POSITION = 0,
+    .x204A_HALL_PHI_E = 0,
+    .x2059_ABN_1_PHI_E = 0,
+    .x205D_ABN_1_INIT_STATE = 0,
+    .x2063_ABN_1_CLEAR_ON_NEXT_NULL = 0,
+    .x2064_ABN_1_VALUE = 0,
+    .x2068_TARGET_TORQUE = 0,
+    .x2069_ACTUAL_TORQUE = 0,
+    .x206A_TARGET_FLUX = 0,
+    .x206B_ACTUAL_FLUX = 0,
+    .x206C_TORQUE_OFFSET = 0,
+    .x2074_TORQUE_PI_ERROR = 0,
+    .x2075_FLUX_PI_ERROR = 0,
+    .x2076_TORQUE_PI_INTEGRATOR = 0,
+    .x2077_FLUX_PI_INTEGRATOR = 0,
+    .x2078_FLUX_OFFSET = 0,
+    .x207C_TARGET_VELOCITY = 0,
+    .x207D_ACTUAL_VELOCITY = 0,
+    .x207E_VELOCITY_OFFSET = 0,
+    .x2083_VELOCITY_PI_INTEGRATOR = 0,
+    .x2084_VELOCITY_PI_ERROR = 0,
+    .x2086_STOP_ON_VELOCITY_DEVIATION = 0,
+    .x208B_VELOCITY_METER_MODE = 0,
+    .x208F_TARGET_POSITION = 0,
+    .x2090_ACTUAL_POSITION = 0,
+    .x2096_POSITION_PI_INTEGRATOR = 0,
+    .x2097_POSITION_PI_ERROR = 0,
+    .x209A_LATCH_POSITION = 0,
+    .x20A8_RIGHT_LIMIT_SWITCH_POSITION = 0,
+    .x20A9_HOME_SWITCH_POSITION = 0,
+    .x20AA_LAST_REFERENCE_POSITION = 0,
+    .x20B2_ABN_2_VALUE = 0x00000000,
+    .x20C0_SPI_ENCODER_POSITION_COUNTER_VALUE = 0x00000000,
+    .x20C1_SPI_ENCODER_COMMUTATION_ANGLE = 0,
+    .x20C6_SPI_LUT_ADDRESS_SELECT = 0,
+    .x20C7_SPI_LUT_DATA = 0,
+    .x20C9_SPI_LUT_COMMON_SHIFT_FACTOR = 0,
+    .x20CE_STEP_DIR_ENABLE = 0,
+    .x20CF_STEP_DIR_EXTRAPOLATION_ENABLE = 0,
+    .x20D0_STEP_DIR_STEP_SIGNAL_TIMEOUT_LIMIT = 1000,
+    .x20D1_STEP_DIR_MAXIMUM_EXTRAPOLATION_VELOCITY = 2147483647,
+    .x20E2_IIT_SUM_1 = 0x00000000,
+    .x20E5_IIT_SUM_2 = 0x00000000,
+    .x20E6_RESET_IIT_SUMS = 0,
+    .x20E7_ACTUAL_TOTAL_MOTOR_CURRENT = 0,
+    .x2121_GENERAL_STATUS_FLAGS = 0,
+    .x2122_SUPPLY_VOLTAGE = 0,
+    .x2125_EXTERNAL_TEMPERATURE = 0,
+    .x2128_CHIP_TEMPERATURE = 0,
+    .x212B_GENERAL_ERROR_FLAGS = 0,
+    .x212C_GDRV_ERROR_FLAGS = 0,
+    .x212D_ADC_STATUS_FLAGS = 0,
+    .x2130_MCC_INPUTS_RAW = 0,
+    .x2131_FOC_VOLTAGE_UX = 0,
+    .x2132_FOC_VOLTAGE_WY = 0,
+    .x2133_FOC_VOLTAGE_V = 0,
+    .x2137_FOC_CURRENT_UX = 0,
+    .x2138_FOC_CURRENT_V = 0,
+    .x2139_FOC_CURRENT_WY = 0,
+    .x213A_FOC_VOLTAGE_UQ = 0,
+    .x213B_FOC_CURRENT_IQ = 0,
+    .x214A_TORQUE_FLUX_COMBINED_TARGET_VALUES = 0x00000000,
+    .x214B_TORQUE_FLUX_COMBINED_ACTUAL_VALUES = 0x00000000,
+    .x214C_VOLTAGE_D_Q_COMBINED_ACTUAL_VALUES = 0x00000000,
+    .x214D_INTEGRATED_ACTUAL_TORQUE_VALUE = 0x00000000,
+    .x214E_INTEGRATED_ACTUAL_VELOCITY_VALUE = 0x00000000
 };
 
 
@@ -302,7 +594,295 @@ typedef struct {
     OD_obj_record_t o_1A02_TPDOMappingParameter[9];
     OD_obj_record_t o_1A03_TPDOMappingParameter[9];
     OD_obj_record_t o_1A04_TPDOMappingParameter[9];
-    OD_obj_var_t o_2122_TMC9660SUPPLY_VOLTAGE;
+    OD_obj_var_t o_2000_MOTOR_TYPE;
+    OD_obj_var_t o_2001_MOTOR_POLE_PAIRS;
+    OD_obj_var_t o_2002_MOTOR_DIRECTION;
+    OD_obj_var_t o_2003_MOTOR_PWM_FREQUENCY;
+    OD_obj_var_t o_2004_COMMUTATION_MODE;
+    OD_obj_var_t o_2005_OUTPUT_VOLTAGE_LIMIT;
+    OD_obj_var_t o_2006_MAX_TORQUE;
+    OD_obj_var_t o_2007_MAX_FLUX;
+    OD_obj_var_t o_2008_PWM_SWITCHING_SCHEME;
+    OD_obj_var_t o_2009_IDLE_MOTOR_PWM_BEHAVIOR;
+    OD_obj_var_t o_200C_ADC_SHUNT_TYPE;
+    OD_obj_var_t o_200D_ADC_I0_RAW;
+    OD_obj_var_t o_200E_ADC_I1_RAW;
+    OD_obj_var_t o_200F_ADC_I2_RAW;
+    OD_obj_var_t o_2010_ADC_I3_RAW;
+    OD_obj_var_t o_2011_CSA_GAIN_ADC_I0_TO_ADC_I2;
+    OD_obj_var_t o_2012_CSA_GAIN_ADC_I3;
+    OD_obj_var_t o_2013_CSA_FILTER_ADC_I0_TO_ADC_I2;
+    OD_obj_var_t o_2014_CSA_FILTER_ADC_I3;
+    OD_obj_var_t o_2015_CURRENT_SCALING_FACTOR;
+    OD_obj_var_t o_2016_PHASE_UX1_ADC_MAPPING;
+    OD_obj_var_t o_2017_PHASE_VX2_ADC_MAPPING;
+    OD_obj_var_t o_2018_PHASE_WY1_ADC_MAPPING;
+    OD_obj_var_t o_2019_PHASE_Y2_ADC_MAPPING;
+    OD_obj_var_t o_201A_ADC_I0_SCALE;
+    OD_obj_var_t o_201B_ADC_I1_SCALE;
+    OD_obj_var_t o_201C_ADC_I2_SCALE;
+    OD_obj_var_t o_201D_ADC_I3_SCALE;
+    OD_obj_var_t o_201E_ADC_I0_INVERTED;
+    OD_obj_var_t o_201F_ADC_I1_INVERTED;
+    OD_obj_var_t o_2020_ADC_I2_INVERTED;
+    OD_obj_var_t o_2021_ADC_I3_INVERTED;
+    OD_obj_var_t o_2022_ADC_I0_OFFSET;
+    OD_obj_var_t o_2023_ADC_I1_OFFSET;
+    OD_obj_var_t o_2024_ADC_I2_OFFSET;
+    OD_obj_var_t o_2025_ADC_I3_OFFSET;
+    OD_obj_var_t o_2026_ADC_I0;
+    OD_obj_var_t o_2027_ADC_I1;
+    OD_obj_var_t o_2028_ADC_I2;
+    OD_obj_var_t o_2029_ADC_I3;
+    OD_obj_var_t o_202D_OPENLOOP_ANGLE;
+    OD_obj_var_t o_202E_OPENLOOP_CURRENT;
+    OD_obj_var_t o_202F_OPENLOOP_VOLTAGE;
+    OD_obj_var_t o_2032_ACCELERATION_FF_GAIN;
+    OD_obj_var_t o_2033_ACCELERATION_FF_SHIFT;
+    OD_obj_var_t o_2034_RAMP_ENABLE;
+    OD_obj_var_t o_2035_DIRECT_VELOCITY_MODE;
+    OD_obj_var_t o_2036_RAMP_AMAX;
+    OD_obj_var_t o_2037_RAMP_A1;
+    OD_obj_var_t o_2038_RAMP_A2;
+    OD_obj_var_t o_2039_RAMP_DMAX;
+    OD_obj_var_t o_203A_RAMP_D1;
+    OD_obj_var_t o_203B_RAMP_D2;
+    OD_obj_var_t o_203C_RAMP_VMAX;
+    OD_obj_var_t o_203D_RAMP_V1;
+    OD_obj_var_t o_203E_RAMP_V2;
+    OD_obj_var_t o_203F_RAMP_VSTART;
+    OD_obj_var_t o_2040_RAMP_VSTOP;
+    OD_obj_var_t o_2041_RAMP_TVMAX;
+    OD_obj_var_t o_2042_RAMP_TZEROWAIT;
+    OD_obj_var_t o_2043_ACCELERATION_FEEDFORWARD_ENABLE;
+    OD_obj_var_t o_2044_VELOCITY_FEEDFORWARD_ENABLE;
+    OD_obj_var_t o_2045_RAMP_VELOCITY;
+    OD_obj_var_t o_2046_RAMP_POSITION;
+    OD_obj_var_t o_204A_HALL_PHI_E;
+    OD_obj_var_t o_204B_HALL_SECTOR_OFFSET;
+    OD_obj_var_t o_204C_HALL_FILTER_LENGTH;
+    OD_obj_var_t o_204D_HALL_POSITION_0_OFFSET;
+    OD_obj_var_t o_204E_HALL_POSITION_60_OFFSET;
+    OD_obj_var_t o_204F_HALL_POSITION_120_OFFSET;
+    OD_obj_var_t o_2050_HALL_POSITION_180_OFFSET;
+    OD_obj_var_t o_2051_HALL_POSITION_240_OFFSET;
+    OD_obj_var_t o_2052_HALL_POSITION_300_OFFSET;
+    OD_obj_var_t o_2053_HALL_INVERT_DIRECTION;
+    OD_obj_var_t o_2054_HALL_EXTRAPOLATION_ENABLE;
+    OD_obj_var_t o_2055_HALL_PHI_E_OFFSET;
+    OD_obj_var_t o_2059_ABN_1_PHI_E;
+    OD_obj_var_t o_205A_ABN_1_STEPS;
+    OD_obj_var_t o_205B_ABN_1_DIRECTION;
+    OD_obj_var_t o_205C_ABN_1_INIT_METHOD;
+    OD_obj_var_t o_205D_ABN_1_INIT_STATE;
+    OD_obj_var_t o_205E_ABN_1_INIT_DELAY;
+    OD_obj_var_t o_205F_ABN_1_INIT_VELOCITY;
+    OD_obj_var_t o_2060_ABN_1_N_CHANNEL_PHI_E_OFFSET;
+    OD_obj_var_t o_2061_ABN_1_N_CHANNEL_INVERTED;
+    OD_obj_var_t o_2062_ABN_1_N_CHANNEL_FILTERING;
+    OD_obj_var_t o_2063_ABN_1_CLEAR_ON_NEXT_NULL;
+    OD_obj_var_t o_2064_ABN_1_VALUE;
+    OD_obj_var_t o_2068_TARGET_TORQUE;
+    OD_obj_var_t o_2069_ACTUAL_TORQUE;
+    OD_obj_var_t o_206A_TARGET_FLUX;
+    OD_obj_var_t o_206B_ACTUAL_FLUX;
+    OD_obj_var_t o_206C_TORQUE_OFFSET;
+    OD_obj_var_t o_206D_TORQUE_P;
+    OD_obj_var_t o_206E_TORQUE_I;
+    OD_obj_var_t o_206F_FLUX_P;
+    OD_obj_var_t o_2070_FLUX_I;
+    OD_obj_var_t o_2071_SEPARATE_TORQUE_FLUX_PI_PARAMTERS;
+    OD_obj_var_t o_2072_CURRENT_NORM_P;
+    OD_obj_var_t o_2073_CURRENT_NORM_I;
+    OD_obj_var_t o_2074_TORQUE_PI_ERROR;
+    OD_obj_var_t o_2075_FLUX_PI_ERROR;
+    OD_obj_var_t o_2076_TORQUE_PI_INTEGRATOR;
+    OD_obj_var_t o_2077_FLUX_PI_INTEGRATOR;
+    OD_obj_var_t o_2078_FLUX_OFFSET;
+    OD_obj_var_t o_207B_VELOCITY_SENSOR_SELECTION;
+    OD_obj_var_t o_207C_TARGET_VELOCITY;
+    OD_obj_var_t o_207D_ACTUAL_VELOCITY;
+    OD_obj_var_t o_207E_VELOCITY_OFFSET;
+    OD_obj_var_t o_207F_VELOCITY_P;
+    OD_obj_var_t o_2080_VELOCITY_I;
+    OD_obj_var_t o_2081_VELOCITY_NORM_P;
+    OD_obj_var_t o_2082_VELOCITY_NORM_I;
+    OD_obj_var_t o_2083_VELOCITY_PI_INTEGRATOR;
+    OD_obj_var_t o_2084_VELOCITY_PI_ERROR;
+    OD_obj_var_t o_2085_VELOCITY_SCALING_FACTOR;
+    OD_obj_var_t o_2086_STOP_ON_VELOCITY_DEVIATION;
+    OD_obj_var_t o_2087_VELOCITY_LOOP_DOWNSAMPLING;
+    OD_obj_var_t o_2088_VELOCITY_REACHED_THRESHOLD;
+    OD_obj_var_t o_2089_VELOCITY_METER_SWITCH_THRESHOLD;
+    OD_obj_var_t o_208A_VELOCITY_METER_SWITCH_HYSTERESIS;
+    OD_obj_var_t o_208B_VELOCITY_METER_MODE;
+    OD_obj_var_t o_208E_POSITION_SENSOR_SELECTION;
+    OD_obj_var_t o_208F_TARGET_POSITION;
+    OD_obj_var_t o_2090_ACTUAL_POSITION;
+    OD_obj_var_t o_2091_POSITION_SCALING_FACTOR;
+    OD_obj_var_t o_2092_POSITION_P;
+    OD_obj_var_t o_2093_POSITION_I;
+    OD_obj_var_t o_2094_POSITION_NORM_P;
+    OD_obj_var_t o_2095_POSITION_NORM_I;
+    OD_obj_var_t o_2096_POSITION_PI_INTEGRATOR;
+    OD_obj_var_t o_2097_POSITION_PI_ERROR;
+    OD_obj_var_t o_2098_STOP_ON_POSITION_DEVIATION;
+    OD_obj_var_t o_2099_POSITION_LOOP_DOWNSAMPLING;
+    OD_obj_var_t o_209A_LATCH_POSITION;
+    OD_obj_var_t o_209B_POSITION_LIMIT_LOW;
+    OD_obj_var_t o_209C_POSITION_LIMIT_HIGH;
+    OD_obj_var_t o_209D_POSITION_REACHED_THRESHOLD;
+    OD_obj_var_t o_20A1_REFERENCE_SWITCH_ENABLE;
+    OD_obj_var_t o_20A2_REFERENCE_SWITCH_POLARITY_AND_SWAP;
+    OD_obj_var_t o_20A3_REFERENCE_SWITCH_LATCH_SETTINGS;
+    OD_obj_var_t o_20A4_EVENT_STOP_SETTINGS;
+    OD_obj_var_t o_20A5_REFERENCE_SWITCH_SEARCH_MODE;
+    OD_obj_var_t o_20A6_REFERENCE_SWITCH_SEARCH_SPEED;
+    OD_obj_var_t o_20A7_REFERENCE_SWITCH_SPEED;
+    OD_obj_var_t o_20A8_RIGHT_LIMIT_SWITCH_POSITION;
+    OD_obj_var_t o_20A9_HOME_SWITCH_POSITION;
+    OD_obj_var_t o_20AA_LAST_REFERENCE_POSITION;
+    OD_obj_var_t o_20AE_ABN_2_STEPS;
+    OD_obj_var_t o_20AF_ABN_2_DIRECTION;
+    OD_obj_var_t o_20B0_ABN_2_GEAR_RATIO;
+    OD_obj_var_t o_20B1_ABN_2_ENABLE;
+    OD_obj_var_t o_20B2_ABN_2_VALUE;
+    OD_obj_var_t o_20B5_SPI_ENCODE_CS_SETTLE_DELAY_TIME;
+    OD_obj_var_t o_20B6_SPI_ENCODER_CS_IDLE_DELAY_TIME;
+    OD_obj_var_t o_20B7_SPI_ENCODER_MAIN_TRANSFER_CMD_SIZE;
+    OD_obj_var_t o_20B8_SPI_ENCODER_SECONDARY_TRANSFER_CMD_SIZE;
+    OD_obj_var_t o_20B9_SPI_ENCODER_TRANSFER_DATA_3_0;
+    OD_obj_var_t o_20BA_SPI_ENCODER_TRANSFER_DATA_7_4;
+    OD_obj_var_t o_20BB_SPI_ENCODER_TRANSFER_DATA_11_8;
+    OD_obj_var_t o_20BC_SPI_ENCODER_TRANSFER_DATA_15_12;
+    OD_obj_var_t o_20BD_SPI_ENCODER_TRANSFER;
+    OD_obj_var_t o_20BE_SPI_ENCODER_POSITION_COUNTER_MASK;
+    OD_obj_var_t o_20BF_SPI_ENCODER_POSITION_COUNTER_SHIFT;
+    OD_obj_var_t o_20C0_SPI_ENCODER_POSITION_COUNTER_VALUE;
+    OD_obj_var_t o_20C1_SPI_ENCODER_COMMUTATION_ANGLE;
+    OD_obj_var_t o_20C2_SPI_ENCODER_INITIALIZATION_METHOD;
+    OD_obj_var_t o_20C3_SPI_ENCODER_DIRECTION;
+    OD_obj_var_t o_20C4_SPI_ENCODER_OFFSET;
+    OD_obj_var_t o_20C5_SPI_LUT_CORRECTION_ENABLE;
+    OD_obj_var_t o_20C6_SPI_LUT_ADDRESS_SELECT;
+    OD_obj_var_t o_20C7_SPI_LUT_DATA;
+    OD_obj_var_t o_20C9_SPI_LUT_COMMON_SHIFT_FACTOR;
+    OD_obj_var_t o_20CD_STEP_DIR_STEP_DIVIDER_SHIFT;
+    OD_obj_var_t o_20CE_STEP_DIR_ENABLE;
+    OD_obj_var_t o_20CF_STEP_DIR_EXTRAPOLATION_ENABLE;
+    OD_obj_var_t o_20D0_STEP_DIR_STEP_SIGNAL_TIMEOUT_LIMIT;
+    OD_obj_var_t o_20D1_STEP_DIR_MAXIMUM_EXTRAPOLATION_VELOCITY;
+    OD_obj_var_t o_20D4_BRAKE_CHOPPER_ENABLE;
+    OD_obj_var_t o_20D5_BRAKE_CHOPPER_VOLTAGE_LIMIT;
+    OD_obj_var_t o_20D6_BRAKE_CHOPPER_HYSTERESIS;
+    OD_obj_var_t o_20D8_RELEASE_BRAKE;
+    OD_obj_var_t o_20D9_BRAKE_RELEASING_DUTY_CYCLE;
+    OD_obj_var_t o_20DA_BRAKE_HOLDING_DUTY_CYCLE;
+    OD_obj_var_t o_20DB_BRAKE_RELEASING_DURATION;
+    OD_obj_var_t o_20DD_INVERT_BRAKE_OUTPUT;
+    OD_obj_var_t o_20E0_THERMAL_WINDING_TIME_CONSTANT_1;
+    OD_obj_var_t o_20E1_IIT_LIMIT_1;
+    OD_obj_var_t o_20E2_IIT_SUM_1;
+    OD_obj_var_t o_20E3_THERMAL_WINDING_TIME_CONSTANT_2;
+    OD_obj_var_t o_20E4_IIT_LIMIT_2;
+    OD_obj_var_t o_20E5_IIT_SUM_2;
+    OD_obj_var_t o_20E6_RESET_IIT_SUMS;
+    OD_obj_var_t o_20E7_ACTUAL_TOTAL_MOTOR_CURRENT;
+    OD_obj_var_t o_20E9_PWM_L_OUTPUT_POLARITY;
+    OD_obj_var_t o_20EA_PWM_H_OUTPUT_POLARITY;
+    OD_obj_var_t o_20EB_BREAK_BEFORE_MAKE_TIME_LOW_UVW;
+    OD_obj_var_t o_20EC_BREAK_BEFORE_MAKE_TIME_HIGH_UVW;
+    OD_obj_var_t o_20ED_BREAK_BEFORE_MAKE_TIME_LOW_Y2;
+    OD_obj_var_t o_20EE_BREAK_BEFORE_MAKE_TIME_HIGH_Y2;
+    OD_obj_var_t o_20EF_USE_ADAPTIVE_DRIVE_TIME_UVW;
+    OD_obj_var_t o_20F0_USE_ADAPTIVE_DRIVE_TIME_Y2;
+    OD_obj_var_t o_20F1_DRIVE_TIME_SINK_UVW;
+    OD_obj_var_t o_20F2_DRIVE_TIME_SOURCE_UVW;
+    OD_obj_var_t o_20F3_DRIVE_TIME_SINK_Y2;
+    OD_obj_var_t o_20F4_DRIVE_TIME_SOURCE_Y2;
+    OD_obj_var_t o_20F5_UVW_SINK_CURRENT;
+    OD_obj_var_t o_20F6_UVW_SOURCE_CURRENT;
+    OD_obj_var_t o_20F7_Y2_SINK_CURRENT;
+    OD_obj_var_t o_20F8_Y2_SOURCE_CURRENT;
+    OD_obj_var_t o_20F9_BOOTSTRAP_CURRENT_LIMIT;
+    OD_obj_var_t o_20FA_UNDERVOLTAGE_PROTECTION_SUPPLY_LEVEL;
+    OD_obj_var_t o_20FB_UNDERVOLTAGE_PROTECTION_VDRV_ENABLE;
+    OD_obj_var_t o_20FC_UNDERVOLTAGE_PROTECTION_BST_UVW_ENABLE;
+    OD_obj_var_t o_20FD_UNDERVOLTAGE_PROTECTION_BST_Y2_ENABLE;
+    OD_obj_var_t o_20FE_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_ENABLE;
+    OD_obj_var_t o_20FF_OVERCURRENT_PROTECTION_UVW_HIGH_SIDE_ENABLE;
+    OD_obj_var_t o_2100_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_ENABLE;
+    OD_obj_var_t o_2101_OVERCURRENT_PROTECTION_Y2_HIGH_SIDE_ENABLE;
+    OD_obj_var_t o_2102_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_THRESHOLD;
+    OD_obj_var_t o_2103_OVERCURRENT_PROTECTION_UVW_HIGH_SIDE_THRESHOLD;
+    OD_obj_var_t o_2104_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_THRESHOLD;
+    OD_obj_var_t o_2105_OVERCURRENT_PROTECTION_Y2_HIGH_SIDE_THRESHOLD;
+    OD_obj_var_t o_2106_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_BLANKING;
+    OD_obj_var_t o_2107_OVERCURRENT_PROTECTION_UVW_HIGH_SIDE_BLANKING;
+    OD_obj_var_t o_2108_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_BLANKING;
+    OD_obj_var_t o_2109_OVERCURRENT_PROTECTION_Y2_HIGH_SIDE_BLANKING;
+    OD_obj_var_t o_210A_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_DEGLITCH;
+    OD_obj_var_t o_210B_OVERCURRENT_PROTECTION_UVW_HIGH_SIDE_DEGLITCH;
+    OD_obj_var_t o_210C_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_DEGLITCH;
+    OD_obj_var_t o_210D_OVERCURRENT_PROTECTION_Y2_HIGH_SIDE_DEGLITCH;
+    OD_obj_var_t o_210E_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_USE_VDS;
+    OD_obj_var_t o_210F_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_USE_VDS;
+    OD_obj_var_t o_2110_VGS_SHORT_ON_PROTECTION_UVW_LOW_SIDE_ENABLE;
+    OD_obj_var_t o_2111_VGS_SHORT_OFF_PROTECTION_UVW_LOW_SIDE_ENABLE;
+    OD_obj_var_t o_2112_VGS_SHORT_ON_PROTECTION_UVW_HIGH_SIDE_ENABLE;
+    OD_obj_var_t o_2113_VGS_SHORT_OFF_PROTECTION_UVW_HIGH_SIDE_ENABLE;
+    OD_obj_var_t o_2114_VGS_SHORT_ON_PROTECTION_Y2_LOW_SIDE_ENABLE;
+    OD_obj_var_t o_2115_VGS_SHORT_OFF_PROTECTION_Y2_LOW_SIDE_ENABLE;
+    OD_obj_var_t o_2116_VGS_SHORT_ON_PROTECTION_Y2_HIGH_SIDE_ENABLE;
+    OD_obj_var_t o_2117_VGS_SHORT_OFF_PROTECTION_Y2_HIGH_SIDE_ENABLE;
+    OD_obj_var_t o_2118_VGS_SHORT_PROTECTION_UVW_BLANKING;
+    OD_obj_var_t o_2119_VGS_SHORT_PROTECTION_Y2_BLANKING;
+    OD_obj_var_t o_211A_VGS_SHORT_PROTECTION_UVW_DEGLITCH;
+    OD_obj_var_t o_211B_VGS_SHORT_PROTECTION_Y2_DEGLITCH;
+    OD_obj_var_t o_211E_GDRV_RETRY_BEHAVIOUR;
+    OD_obj_var_t o_211F_DRIVE_FAULT_BEHAVIOUR;
+    OD_obj_var_t o_2120_FAULT_HANDLER_NUMBER_OF_RETRIES;
+    OD_obj_var_t o_2121_GENERAL_STATUS_FLAGS;
+    OD_obj_var_t o_2122_SUPPLY_VOLTAGE;
+    OD_obj_var_t o_2123_SUPPLY_OVERVOLTAGE_WARNING_THRESHOLD;
+    OD_obj_var_t o_2124_SUPPLY_UNDERVOLTAGE_WARNING_THRESHOLD;
+    OD_obj_var_t o_2125_EXTERNAL_TEMPERATURE;
+    OD_obj_var_t o_2126_EXTERNAL_TEMPERATURE_SHUTDOWN_THRESHOLD;
+    OD_obj_var_t o_2127_EXTERNAL_TEMPERATURE_WARNING_THRESHOLD;
+    OD_obj_var_t o_2128_CHIP_TEMPERATURE;
+    OD_obj_var_t o_2129_CHIP_TEMPERATURE_SHUTDOWN_THRESHOLD;
+    OD_obj_var_t o_212A_CHIP_TEMPERATURE_WARNING_THRESHOLD;
+    OD_obj_var_t o_212B_GENERAL_ERROR_FLAGS;
+    OD_obj_var_t o_212C_GDRV_ERROR_FLAGS;
+    OD_obj_var_t o_212D_ADC_STATUS_FLAGS;
+    OD_obj_var_t o_2130_MCC_INPUTS_RAW;
+    OD_obj_var_t o_2131_FOC_VOLTAGE_UX;
+    OD_obj_var_t o_2132_FOC_VOLTAGE_WY;
+    OD_obj_var_t o_2133_FOC_VOLTAGE_V;
+    OD_obj_var_t o_2134_FIELDWEAKENING_I;
+    OD_obj_var_t o_2136_FIELDWEAKENING_VOLTAGE_THRESHOLD;
+    OD_obj_var_t o_2137_FOC_CURRENT_UX;
+    OD_obj_var_t o_2138_FOC_CURRENT_V;
+    OD_obj_var_t o_2139_FOC_CURRENT_WY;
+    OD_obj_var_t o_213A_FOC_VOLTAGE_UQ;
+    OD_obj_var_t o_213B_FOC_CURRENT_IQ;
+    OD_obj_var_t o_213E_TARGET_TORQUE_BIQUAD_FILTER_ENABLE;
+    OD_obj_var_t o_213F_TARGET_TORQUE_BIQUAD_FILTER_ACOEFF_1;
+    OD_obj_var_t o_2140_TARGET_TORQUE_BIQUAD_FILTER_ACOEFF_2;
+    OD_obj_var_t o_2141_TARGET_TORQUE_BIQUAD_FILTER_BCOEFF_0;
+    OD_obj_var_t o_2142_TARGET_TORQUE_BIQUAD_FILTER_BCOEFF_1;
+    OD_obj_var_t o_2143_TARGET_TORQUE_BIQUAD_FILTER_BCOEFF_2;
+    OD_obj_var_t o_2144_ACTUAL_VELOCITY_BIQUAD_FILTER_ENABLE;
+    OD_obj_var_t o_2145_ACTUAL_VELOCITY_BIQUAD_FILTER_ACOEFF_1;
+    OD_obj_var_t o_2146_ACTUAL_VELOCITY_BIQUAD_FILTER_ACOEFF_2;
+    OD_obj_var_t o_2147_ACTUAL_VELOCITY_BIQUAD_FILTER_BCOEFF_0;
+    OD_obj_var_t o_2148_ACTUAL_VELOCITY_BIQUAD_FILTER_BCOEFF_1;
+    OD_obj_var_t o_2149_ACTUAL_VELOCITY_BIQUAD_FILTER_BCOEFF_2;
+    OD_obj_var_t o_214A_TORQUE_FLUX_COMBINED_TARGET_VALUES;
+    OD_obj_var_t o_214B_TORQUE_FLUX_COMBINED_ACTUAL_VALUES;
+    OD_obj_var_t o_214C_VOLTAGE_D_Q_COMBINED_ACTUAL_VALUES;
+    OD_obj_var_t o_214D_INTEGRATED_ACTUAL_TORQUE_VALUE;
+    OD_obj_var_t o_214E_INTEGRATED_ACTUAL_VELOCITY_VALUE;
     OD_obj_var_t o_6040_controlword;
     OD_obj_var_t o_6041_statusword;
     OD_obj_var_t o_6060_modesOfOperation;
@@ -361,7 +941,7 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     .o_1008_manufacturerDeviceName = {
         .dataOrig = &OD_PERSIST_COMM.x1008_manufacturerDeviceName[0],
         .attribute = ODA_SDO_R | ODA_STR,
-        .dataLength = 21
+        .dataLength = 8
     },
     .o_1009_manufacturerHardwareVersion = {
         .dataOrig = &OD_PERSIST_COMM.x1009_manufacturerHardwareVersion[0],
@@ -1356,10 +1936,1450 @@ static CO_PROGMEM ODObjs_t ODObjs = {
             .dataLength = 4
         }
     },
-    .o_2122_TMC9660SUPPLY_VOLTAGE = {
-        .dataOrig = &OD_RAM.x2122_TMC9660SUPPLY_VOLTAGE,
+    .o_2000_MOTOR_TYPE = {
+        .dataOrig = &OD_PERSIST_TMC.x2000_MOTOR_TYPE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2001_MOTOR_POLE_PAIRS = {
+        .dataOrig = &OD_PERSIST_TMC.x2001_MOTOR_POLE_PAIRS,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2002_MOTOR_DIRECTION = {
+        .dataOrig = &OD_PERSIST_TMC.x2002_MOTOR_DIRECTION,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2003_MOTOR_PWM_FREQUENCY = {
+        .dataOrig = &OD_PERSIST_TMC.x2003_MOTOR_PWM_FREQUENCY,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2004_COMMUTATION_MODE = {
+        .dataOrig = &OD_APP_SHADOW.x2004_COMMUTATION_MODE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2005_OUTPUT_VOLTAGE_LIMIT = {
+        .dataOrig = &OD_PERSIST_TMC.x2005_OUTPUT_VOLTAGE_LIMIT,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2006_MAX_TORQUE = {
+        .dataOrig = &OD_PERSIST_TMC.x2006_MAX_TORQUE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2007_MAX_FLUX = {
+        .dataOrig = &OD_PERSIST_TMC.x2007_MAX_FLUX,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2008_PWM_SWITCHING_SCHEME = {
+        .dataOrig = &OD_PERSIST_TMC.x2008_PWM_SWITCHING_SCHEME,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2009_IDLE_MOTOR_PWM_BEHAVIOR = {
+        .dataOrig = &OD_PERSIST_TMC.x2009_IDLE_MOTOR_PWM_BEHAVIOR,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_200C_ADC_SHUNT_TYPE = {
+        .dataOrig = &OD_PERSIST_TMC.x200C_ADC_SHUNT_TYPE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_200D_ADC_I0_RAW = {
+        .dataOrig = &OD_APP_SHADOW.x200D_ADC_I0_RAW,
         .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
-        .dataLength = 2
+        .dataLength = 4
+    },
+    .o_200E_ADC_I1_RAW = {
+        .dataOrig = &OD_APP_SHADOW.x200E_ADC_I1_RAW,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_200F_ADC_I2_RAW = {
+        .dataOrig = &OD_APP_SHADOW.x200F_ADC_I2_RAW,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2010_ADC_I3_RAW = {
+        .dataOrig = &OD_APP_SHADOW.x2010_ADC_I3_RAW,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2011_CSA_GAIN_ADC_I0_TO_ADC_I2 = {
+        .dataOrig = &OD_PERSIST_TMC.x2011_CSA_GAIN_ADC_I0_TO_ADC_I2,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2012_CSA_GAIN_ADC_I3 = {
+        .dataOrig = &OD_PERSIST_TMC.x2012_CSA_GAIN_ADC_I3,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2013_CSA_FILTER_ADC_I0_TO_ADC_I2 = {
+        .dataOrig = &OD_PERSIST_TMC.x2013_CSA_FILTER_ADC_I0_TO_ADC_I2,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2014_CSA_FILTER_ADC_I3 = {
+        .dataOrig = &OD_PERSIST_TMC.x2014_CSA_FILTER_ADC_I3,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2015_CURRENT_SCALING_FACTOR = {
+        .dataOrig = &OD_PERSIST_TMC.x2015_CURRENT_SCALING_FACTOR,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2016_PHASE_UX1_ADC_MAPPING = {
+        .dataOrig = &OD_PERSIST_TMC.x2016_PHASE_UX1_ADC_MAPPING,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2017_PHASE_VX2_ADC_MAPPING = {
+        .dataOrig = &OD_PERSIST_TMC.x2017_PHASE_VX2_ADC_MAPPING,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2018_PHASE_WY1_ADC_MAPPING = {
+        .dataOrig = &OD_PERSIST_TMC.x2018_PHASE_WY1_ADC_MAPPING,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2019_PHASE_Y2_ADC_MAPPING = {
+        .dataOrig = &OD_PERSIST_TMC.x2019_PHASE_Y2_ADC_MAPPING,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_201A_ADC_I0_SCALE = {
+        .dataOrig = &OD_PERSIST_TMC.x201A_ADC_I0_SCALE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_201B_ADC_I1_SCALE = {
+        .dataOrig = &OD_PERSIST_TMC.x201B_ADC_I1_SCALE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_201C_ADC_I2_SCALE = {
+        .dataOrig = &OD_PERSIST_TMC.x201C_ADC_I2_SCALE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_201D_ADC_I3_SCALE = {
+        .dataOrig = &OD_PERSIST_TMC.x201D_ADC_I3_SCALE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_201E_ADC_I0_INVERTED = {
+        .dataOrig = &OD_PERSIST_TMC.x201E_ADC_I0_INVERTED,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_201F_ADC_I1_INVERTED = {
+        .dataOrig = &OD_PERSIST_TMC.x201F_ADC_I1_INVERTED,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2020_ADC_I2_INVERTED = {
+        .dataOrig = &OD_PERSIST_TMC.x2020_ADC_I2_INVERTED,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2021_ADC_I3_INVERTED = {
+        .dataOrig = &OD_PERSIST_TMC.x2021_ADC_I3_INVERTED,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2022_ADC_I0_OFFSET = {
+        .dataOrig = &OD_PERSIST_TMC.x2022_ADC_I0_OFFSET,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2023_ADC_I1_OFFSET = {
+        .dataOrig = &OD_PERSIST_TMC.x2023_ADC_I1_OFFSET,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2024_ADC_I2_OFFSET = {
+        .dataOrig = &OD_PERSIST_TMC.x2024_ADC_I2_OFFSET,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2025_ADC_I3_OFFSET = {
+        .dataOrig = &OD_PERSIST_TMC.x2025_ADC_I3_OFFSET,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2026_ADC_I0 = {
+        .dataOrig = &OD_APP_SHADOW.x2026_ADC_I0,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2027_ADC_I1 = {
+        .dataOrig = &OD_APP_SHADOW.x2027_ADC_I1,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2028_ADC_I2 = {
+        .dataOrig = &OD_APP_SHADOW.x2028_ADC_I2,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2029_ADC_I3 = {
+        .dataOrig = &OD_APP_SHADOW.x2029_ADC_I3,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_202D_OPENLOOP_ANGLE = {
+        .dataOrig = &OD_APP_SHADOW.x202D_OPENLOOP_ANGLE,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_202E_OPENLOOP_CURRENT = {
+        .dataOrig = &OD_PERSIST_TMC.x202E_OPENLOOP_CURRENT,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_202F_OPENLOOP_VOLTAGE = {
+        .dataOrig = &OD_PERSIST_TMC.x202F_OPENLOOP_VOLTAGE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2032_ACCELERATION_FF_GAIN = {
+        .dataOrig = &OD_PERSIST_TMC.x2032_ACCELERATION_FF_GAIN,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2033_ACCELERATION_FF_SHIFT = {
+        .dataOrig = &OD_PERSIST_TMC.x2033_ACCELERATION_FF_SHIFT,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2034_RAMP_ENABLE = {
+        .dataOrig = &OD_PERSIST_TMC.x2034_RAMP_ENABLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2035_DIRECT_VELOCITY_MODE = {
+        .dataOrig = &OD_PERSIST_TMC.x2035_DIRECT_VELOCITY_MODE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2036_RAMP_AMAX = {
+        .dataOrig = &OD_PERSIST_TMC.x2036_RAMP_AMAX,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2037_RAMP_A1 = {
+        .dataOrig = &OD_PERSIST_TMC.x2037_RAMP_A1,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2038_RAMP_A2 = {
+        .dataOrig = &OD_PERSIST_TMC.x2038_RAMP_A2,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2039_RAMP_DMAX = {
+        .dataOrig = &OD_PERSIST_TMC.x2039_RAMP_DMAX,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_203A_RAMP_D1 = {
+        .dataOrig = &OD_PERSIST_TMC.x203A_RAMP_D1,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_203B_RAMP_D2 = {
+        .dataOrig = &OD_PERSIST_TMC.x203B_RAMP_D2,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_203C_RAMP_VMAX = {
+        .dataOrig = &OD_PERSIST_TMC.x203C_RAMP_VMAX,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_203D_RAMP_V1 = {
+        .dataOrig = &OD_PERSIST_TMC.x203D_RAMP_V1,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_203E_RAMP_V2 = {
+        .dataOrig = &OD_PERSIST_TMC.x203E_RAMP_V2,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_203F_RAMP_VSTART = {
+        .dataOrig = &OD_PERSIST_TMC.x203F_RAMP_VSTART,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2040_RAMP_VSTOP = {
+        .dataOrig = &OD_PERSIST_TMC.x2040_RAMP_VSTOP,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2041_RAMP_TVMAX = {
+        .dataOrig = &OD_PERSIST_TMC.x2041_RAMP_TVMAX,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2042_RAMP_TZEROWAIT = {
+        .dataOrig = &OD_PERSIST_TMC.x2042_RAMP_TZEROWAIT,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2043_ACCELERATION_FEEDFORWARD_ENABLE = {
+        .dataOrig = &OD_PERSIST_TMC.x2043_ACCELERATION_FEEDFORWARD_ENABLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2044_VELOCITY_FEEDFORWARD_ENABLE = {
+        .dataOrig = &OD_PERSIST_TMC.x2044_VELOCITY_FEEDFORWARD_ENABLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2045_RAMP_VELOCITY = {
+        .dataOrig = &OD_APP_SHADOW.x2045_RAMP_VELOCITY,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2046_RAMP_POSITION = {
+        .dataOrig = &OD_APP_SHADOW.x2046_RAMP_POSITION,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_204A_HALL_PHI_E = {
+        .dataOrig = &OD_APP_SHADOW.x204A_HALL_PHI_E,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_204B_HALL_SECTOR_OFFSET = {
+        .dataOrig = &OD_PERSIST_TMC.x204B_HALL_SECTOR_OFFSET,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_204C_HALL_FILTER_LENGTH = {
+        .dataOrig = &OD_PERSIST_TMC.x204C_HALL_FILTER_LENGTH,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_204D_HALL_POSITION_0_OFFSET = {
+        .dataOrig = &OD_PERSIST_TMC.x204D_HALL_POSITION_0_OFFSET,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_204E_HALL_POSITION_60_OFFSET = {
+        .dataOrig = &OD_PERSIST_TMC.x204E_HALL_POSITION_60_OFFSET,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_204F_HALL_POSITION_120_OFFSET = {
+        .dataOrig = &OD_PERSIST_TMC.x204F_HALL_POSITION_120_OFFSET,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2050_HALL_POSITION_180_OFFSET = {
+        .dataOrig = &OD_PERSIST_TMC.x2050_HALL_POSITION_180_OFFSET,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2051_HALL_POSITION_240_OFFSET = {
+        .dataOrig = &OD_PERSIST_TMC.x2051_HALL_POSITION_240_OFFSET,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2052_HALL_POSITION_300_OFFSET = {
+        .dataOrig = &OD_PERSIST_TMC.x2052_HALL_POSITION_300_OFFSET,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2053_HALL_INVERT_DIRECTION = {
+        .dataOrig = &OD_PERSIST_TMC.x2053_HALL_INVERT_DIRECTION,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2054_HALL_EXTRAPOLATION_ENABLE = {
+        .dataOrig = &OD_PERSIST_TMC.x2054_HALL_EXTRAPOLATION_ENABLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2055_HALL_PHI_E_OFFSET = {
+        .dataOrig = &OD_PERSIST_TMC.x2055_HALL_PHI_E_OFFSET,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2059_ABN_1_PHI_E = {
+        .dataOrig = &OD_APP_SHADOW.x2059_ABN_1_PHI_E,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_205A_ABN_1_STEPS = {
+        .dataOrig = &OD_PERSIST_TMC.x205A_ABN_1_STEPS,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_205B_ABN_1_DIRECTION = {
+        .dataOrig = &OD_PERSIST_TMC.x205B_ABN_1_DIRECTION,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_205C_ABN_1_INIT_METHOD = {
+        .dataOrig = &OD_PERSIST_TMC.x205C_ABN_1_INIT_METHOD,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_205D_ABN_1_INIT_STATE = {
+        .dataOrig = &OD_APP_SHADOW.x205D_ABN_1_INIT_STATE,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_205E_ABN_1_INIT_DELAY = {
+        .dataOrig = &OD_PERSIST_TMC.x205E_ABN_1_INIT_DELAY,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_205F_ABN_1_INIT_VELOCITY = {
+        .dataOrig = &OD_PERSIST_TMC.x205F_ABN_1_INIT_VELOCITY,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2060_ABN_1_N_CHANNEL_PHI_E_OFFSET = {
+        .dataOrig = &OD_PERSIST_TMC.x2060_ABN_1_N_CHANNEL_PHI_E_OFFSET,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2061_ABN_1_N_CHANNEL_INVERTED = {
+        .dataOrig = &OD_PERSIST_TMC.x2061_ABN_1_N_CHANNEL_INVERTED,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2062_ABN_1_N_CHANNEL_FILTERING = {
+        .dataOrig = &OD_PERSIST_TMC.x2062_ABN_1_N_CHANNEL_FILTERING,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2063_ABN_1_CLEAR_ON_NEXT_NULL = {
+        .dataOrig = &OD_APP_SHADOW.x2063_ABN_1_CLEAR_ON_NEXT_NULL,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2064_ABN_1_VALUE = {
+        .dataOrig = &OD_APP_SHADOW.x2064_ABN_1_VALUE,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2068_TARGET_TORQUE = {
+        .dataOrig = &OD_APP_SHADOW.x2068_TARGET_TORQUE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2069_ACTUAL_TORQUE = {
+        .dataOrig = &OD_APP_SHADOW.x2069_ACTUAL_TORQUE,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_206A_TARGET_FLUX = {
+        .dataOrig = &OD_APP_SHADOW.x206A_TARGET_FLUX,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_206B_ACTUAL_FLUX = {
+        .dataOrig = &OD_APP_SHADOW.x206B_ACTUAL_FLUX,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_206C_TORQUE_OFFSET = {
+        .dataOrig = &OD_APP_SHADOW.x206C_TORQUE_OFFSET,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_206D_TORQUE_P = {
+        .dataOrig = &OD_PERSIST_TMC.x206D_TORQUE_P,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_206E_TORQUE_I = {
+        .dataOrig = &OD_PERSIST_TMC.x206E_TORQUE_I,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_206F_FLUX_P = {
+        .dataOrig = &OD_PERSIST_TMC.x206F_FLUX_P,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2070_FLUX_I = {
+        .dataOrig = &OD_PERSIST_TMC.x2070_FLUX_I,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2071_SEPARATE_TORQUE_FLUX_PI_PARAMTERS = {
+        .dataOrig = &OD_PERSIST_TMC.x2071_SEPARATE_TORQUE_FLUX_PI_PARAMTERS,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2072_CURRENT_NORM_P = {
+        .dataOrig = &OD_PERSIST_TMC.x2072_CURRENT_NORM_P,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2073_CURRENT_NORM_I = {
+        .dataOrig = &OD_PERSIST_TMC.x2073_CURRENT_NORM_I,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2074_TORQUE_PI_ERROR = {
+        .dataOrig = &OD_APP_SHADOW.x2074_TORQUE_PI_ERROR,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2075_FLUX_PI_ERROR = {
+        .dataOrig = &OD_APP_SHADOW.x2075_FLUX_PI_ERROR,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2076_TORQUE_PI_INTEGRATOR = {
+        .dataOrig = &OD_APP_SHADOW.x2076_TORQUE_PI_INTEGRATOR,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2077_FLUX_PI_INTEGRATOR = {
+        .dataOrig = &OD_APP_SHADOW.x2077_FLUX_PI_INTEGRATOR,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2078_FLUX_OFFSET = {
+        .dataOrig = &OD_APP_SHADOW.x2078_FLUX_OFFSET,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_207B_VELOCITY_SENSOR_SELECTION = {
+        .dataOrig = &OD_PERSIST_TMC.x207B_VELOCITY_SENSOR_SELECTION,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_207C_TARGET_VELOCITY = {
+        .dataOrig = &OD_APP_SHADOW.x207C_TARGET_VELOCITY,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_207D_ACTUAL_VELOCITY = {
+        .dataOrig = &OD_APP_SHADOW.x207D_ACTUAL_VELOCITY,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_207E_VELOCITY_OFFSET = {
+        .dataOrig = &OD_APP_SHADOW.x207E_VELOCITY_OFFSET,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_207F_VELOCITY_P = {
+        .dataOrig = &OD_PERSIST_TMC.x207F_VELOCITY_P,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2080_VELOCITY_I = {
+        .dataOrig = &OD_PERSIST_TMC.x2080_VELOCITY_I,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2081_VELOCITY_NORM_P = {
+        .dataOrig = &OD_PERSIST_TMC.x2081_VELOCITY_NORM_P,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2082_VELOCITY_NORM_I = {
+        .dataOrig = &OD_PERSIST_TMC.x2082_VELOCITY_NORM_I,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2083_VELOCITY_PI_INTEGRATOR = {
+        .dataOrig = &OD_APP_SHADOW.x2083_VELOCITY_PI_INTEGRATOR,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2084_VELOCITY_PI_ERROR = {
+        .dataOrig = &OD_APP_SHADOW.x2084_VELOCITY_PI_ERROR,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2085_VELOCITY_SCALING_FACTOR = {
+        .dataOrig = &OD_PERSIST_TMC.x2085_VELOCITY_SCALING_FACTOR,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2086_STOP_ON_VELOCITY_DEVIATION = {
+        .dataOrig = &OD_APP_SHADOW.x2086_STOP_ON_VELOCITY_DEVIATION,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2087_VELOCITY_LOOP_DOWNSAMPLING = {
+        .dataOrig = &OD_PERSIST_TMC.x2087_VELOCITY_LOOP_DOWNSAMPLING,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2088_VELOCITY_REACHED_THRESHOLD = {
+        .dataOrig = &OD_PERSIST_TMC.x2088_VELOCITY_REACHED_THRESHOLD,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2089_VELOCITY_METER_SWITCH_THRESHOLD = {
+        .dataOrig = &OD_PERSIST_TMC.x2089_VELOCITY_METER_SWITCH_THRESHOLD,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_208A_VELOCITY_METER_SWITCH_HYSTERESIS = {
+        .dataOrig = &OD_PERSIST_TMC.x208A_VELOCITY_METER_SWITCH_HYSTERESIS,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_208B_VELOCITY_METER_MODE = {
+        .dataOrig = &OD_APP_SHADOW.x208B_VELOCITY_METER_MODE,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_208E_POSITION_SENSOR_SELECTION = {
+        .dataOrig = &OD_PERSIST_TMC.x208E_POSITION_SENSOR_SELECTION,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_208F_TARGET_POSITION = {
+        .dataOrig = &OD_APP_SHADOW.x208F_TARGET_POSITION,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2090_ACTUAL_POSITION = {
+        .dataOrig = &OD_APP_SHADOW.x2090_ACTUAL_POSITION,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2091_POSITION_SCALING_FACTOR = {
+        .dataOrig = &OD_PERSIST_TMC.x2091_POSITION_SCALING_FACTOR,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2092_POSITION_P = {
+        .dataOrig = &OD_PERSIST_TMC.x2092_POSITION_P,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2093_POSITION_I = {
+        .dataOrig = &OD_PERSIST_TMC.x2093_POSITION_I,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2094_POSITION_NORM_P = {
+        .dataOrig = &OD_PERSIST_TMC.x2094_POSITION_NORM_P,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2095_POSITION_NORM_I = {
+        .dataOrig = &OD_PERSIST_TMC.x2095_POSITION_NORM_I,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2096_POSITION_PI_INTEGRATOR = {
+        .dataOrig = &OD_APP_SHADOW.x2096_POSITION_PI_INTEGRATOR,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2097_POSITION_PI_ERROR = {
+        .dataOrig = &OD_APP_SHADOW.x2097_POSITION_PI_ERROR,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2098_STOP_ON_POSITION_DEVIATION = {
+        .dataOrig = &OD_PERSIST_TMC.x2098_STOP_ON_POSITION_DEVIATION,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2099_POSITION_LOOP_DOWNSAMPLING = {
+        .dataOrig = &OD_PERSIST_TMC.x2099_POSITION_LOOP_DOWNSAMPLING,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_209A_LATCH_POSITION = {
+        .dataOrig = &OD_APP_SHADOW.x209A_LATCH_POSITION,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_209B_POSITION_LIMIT_LOW = {
+        .dataOrig = &OD_PERSIST_TMC.x209B_POSITION_LIMIT_LOW,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_209C_POSITION_LIMIT_HIGH = {
+        .dataOrig = &OD_PERSIST_TMC.x209C_POSITION_LIMIT_HIGH,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_209D_POSITION_REACHED_THRESHOLD = {
+        .dataOrig = &OD_PERSIST_TMC.x209D_POSITION_REACHED_THRESHOLD,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20A1_REFERENCE_SWITCH_ENABLE = {
+        .dataOrig = &OD_PERSIST_TMC.x20A1_REFERENCE_SWITCH_ENABLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20A2_REFERENCE_SWITCH_POLARITY_AND_SWAP = {
+        .dataOrig = &OD_PERSIST_TMC.x20A2_REFERENCE_SWITCH_POLARITY_AND_SWAP,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20A3_REFERENCE_SWITCH_LATCH_SETTINGS = {
+        .dataOrig = &OD_PERSIST_TMC.x20A3_REFERENCE_SWITCH_LATCH_SETTINGS,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20A4_EVENT_STOP_SETTINGS = {
+        .dataOrig = &OD_PERSIST_TMC.x20A4_EVENT_STOP_SETTINGS,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20A5_REFERENCE_SWITCH_SEARCH_MODE = {
+        .dataOrig = &OD_PERSIST_TMC.x20A5_REFERENCE_SWITCH_SEARCH_MODE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20A6_REFERENCE_SWITCH_SEARCH_SPEED = {
+        .dataOrig = &OD_PERSIST_TMC.x20A6_REFERENCE_SWITCH_SEARCH_SPEED,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20A7_REFERENCE_SWITCH_SPEED = {
+        .dataOrig = &OD_PERSIST_TMC.x20A7_REFERENCE_SWITCH_SPEED,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20A8_RIGHT_LIMIT_SWITCH_POSITION = {
+        .dataOrig = &OD_APP_SHADOW.x20A8_RIGHT_LIMIT_SWITCH_POSITION,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20A9_HOME_SWITCH_POSITION = {
+        .dataOrig = &OD_APP_SHADOW.x20A9_HOME_SWITCH_POSITION,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20AA_LAST_REFERENCE_POSITION = {
+        .dataOrig = &OD_APP_SHADOW.x20AA_LAST_REFERENCE_POSITION,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20AE_ABN_2_STEPS = {
+        .dataOrig = &OD_PERSIST_TMC.x20AE_ABN_2_STEPS,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20AF_ABN_2_DIRECTION = {
+        .dataOrig = &OD_PERSIST_TMC.x20AF_ABN_2_DIRECTION,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20B0_ABN_2_GEAR_RATIO = {
+        .dataOrig = &OD_PERSIST_TMC.x20B0_ABN_2_GEAR_RATIO,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20B1_ABN_2_ENABLE = {
+        .dataOrig = &OD_PERSIST_TMC.x20B1_ABN_2_ENABLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20B2_ABN_2_VALUE = {
+        .dataOrig = &OD_APP_SHADOW.x20B2_ABN_2_VALUE,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20B5_SPI_ENCODE_CS_SETTLE_DELAY_TIME = {
+        .dataOrig = &OD_PERSIST_TMC.x20B5_SPI_ENCODE_CS_SETTLE_DELAY_TIME,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20B6_SPI_ENCODER_CS_IDLE_DELAY_TIME = {
+        .dataOrig = &OD_PERSIST_TMC.x20B6_SPI_ENCODER_CS_IDLE_DELAY_TIME,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20B7_SPI_ENCODER_MAIN_TRANSFER_CMD_SIZE = {
+        .dataOrig = &OD_PERSIST_TMC.x20B7_SPI_ENCODER_MAIN_TRANSFER_CMD_SIZE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20B8_SPI_ENCODER_SECONDARY_TRANSFER_CMD_SIZE = {
+        .dataOrig = &OD_PERSIST_TMC.x20B8_SPI_ENCODER_SECONDARY_TRANSFER_CMD_SIZE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20B9_SPI_ENCODER_TRANSFER_DATA_3_0 = {
+        .dataOrig = &OD_PERSIST_TMC.x20B9_SPI_ENCODER_TRANSFER_DATA_3_0,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20BA_SPI_ENCODER_TRANSFER_DATA_7_4 = {
+        .dataOrig = &OD_PERSIST_TMC.x20BA_SPI_ENCODER_TRANSFER_DATA_7_4,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20BB_SPI_ENCODER_TRANSFER_DATA_11_8 = {
+        .dataOrig = &OD_PERSIST_TMC.x20BB_SPI_ENCODER_TRANSFER_DATA_11_8,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20BC_SPI_ENCODER_TRANSFER_DATA_15_12 = {
+        .dataOrig = &OD_PERSIST_TMC.x20BC_SPI_ENCODER_TRANSFER_DATA_15_12,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20BD_SPI_ENCODER_TRANSFER = {
+        .dataOrig = &OD_PERSIST_TMC.x20BD_SPI_ENCODER_TRANSFER,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20BE_SPI_ENCODER_POSITION_COUNTER_MASK = {
+        .dataOrig = &OD_PERSIST_TMC.x20BE_SPI_ENCODER_POSITION_COUNTER_MASK,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20BF_SPI_ENCODER_POSITION_COUNTER_SHIFT = {
+        .dataOrig = &OD_PERSIST_TMC.x20BF_SPI_ENCODER_POSITION_COUNTER_SHIFT,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20C0_SPI_ENCODER_POSITION_COUNTER_VALUE = {
+        .dataOrig = &OD_APP_SHADOW.x20C0_SPI_ENCODER_POSITION_COUNTER_VALUE,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20C1_SPI_ENCODER_COMMUTATION_ANGLE = {
+        .dataOrig = &OD_APP_SHADOW.x20C1_SPI_ENCODER_COMMUTATION_ANGLE,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20C2_SPI_ENCODER_INITIALIZATION_METHOD = {
+        .dataOrig = &OD_PERSIST_TMC.x20C2_SPI_ENCODER_INITIALIZATION_METHOD,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20C3_SPI_ENCODER_DIRECTION = {
+        .dataOrig = &OD_PERSIST_TMC.x20C3_SPI_ENCODER_DIRECTION,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20C4_SPI_ENCODER_OFFSET = {
+        .dataOrig = &OD_PERSIST_TMC.x20C4_SPI_ENCODER_OFFSET,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20C5_SPI_LUT_CORRECTION_ENABLE = {
+        .dataOrig = &OD_PERSIST_TMC.x20C5_SPI_LUT_CORRECTION_ENABLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20C6_SPI_LUT_ADDRESS_SELECT = {
+        .dataOrig = &OD_APP_SHADOW.x20C6_SPI_LUT_ADDRESS_SELECT,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20C7_SPI_LUT_DATA = {
+        .dataOrig = &OD_APP_SHADOW.x20C7_SPI_LUT_DATA,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20C9_SPI_LUT_COMMON_SHIFT_FACTOR = {
+        .dataOrig = &OD_APP_SHADOW.x20C9_SPI_LUT_COMMON_SHIFT_FACTOR,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20CD_STEP_DIR_STEP_DIVIDER_SHIFT = {
+        .dataOrig = &OD_PERSIST_TMC.x20CD_STEP_DIR_STEP_DIVIDER_SHIFT,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20CE_STEP_DIR_ENABLE = {
+        .dataOrig = &OD_APP_SHADOW.x20CE_STEP_DIR_ENABLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20CF_STEP_DIR_EXTRAPOLATION_ENABLE = {
+        .dataOrig = &OD_APP_SHADOW.x20CF_STEP_DIR_EXTRAPOLATION_ENABLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20D0_STEP_DIR_STEP_SIGNAL_TIMEOUT_LIMIT = {
+        .dataOrig = &OD_APP_SHADOW.x20D0_STEP_DIR_STEP_SIGNAL_TIMEOUT_LIMIT,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20D1_STEP_DIR_MAXIMUM_EXTRAPOLATION_VELOCITY = {
+        .dataOrig = &OD_APP_SHADOW.x20D1_STEP_DIR_MAXIMUM_EXTRAPOLATION_VELOCITY,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20D4_BRAKE_CHOPPER_ENABLE = {
+        .dataOrig = &OD_PERSIST_TMC.x20D4_BRAKE_CHOPPER_ENABLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20D5_BRAKE_CHOPPER_VOLTAGE_LIMIT = {
+        .dataOrig = &OD_PERSIST_TMC.x20D5_BRAKE_CHOPPER_VOLTAGE_LIMIT,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20D6_BRAKE_CHOPPER_HYSTERESIS = {
+        .dataOrig = &OD_PERSIST_TMC.x20D6_BRAKE_CHOPPER_HYSTERESIS,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20D8_RELEASE_BRAKE = {
+        .dataOrig = &OD_PERSIST_TMC.x20D8_RELEASE_BRAKE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20D9_BRAKE_RELEASING_DUTY_CYCLE = {
+        .dataOrig = &OD_PERSIST_TMC.x20D9_BRAKE_RELEASING_DUTY_CYCLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20DA_BRAKE_HOLDING_DUTY_CYCLE = {
+        .dataOrig = &OD_PERSIST_TMC.x20DA_BRAKE_HOLDING_DUTY_CYCLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20DB_BRAKE_RELEASING_DURATION = {
+        .dataOrig = &OD_PERSIST_TMC.x20DB_BRAKE_RELEASING_DURATION,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20DD_INVERT_BRAKE_OUTPUT = {
+        .dataOrig = &OD_PERSIST_TMC.x20DD_INVERT_BRAKE_OUTPUT,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20E0_THERMAL_WINDING_TIME_CONSTANT_1 = {
+        .dataOrig = &OD_PERSIST_TMC.x20E0_THERMAL_WINDING_TIME_CONSTANT_1,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20E1_IIT_LIMIT_1 = {
+        .dataOrig = &OD_PERSIST_TMC.x20E1_IIT_LIMIT_1,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20E2_IIT_SUM_1 = {
+        .dataOrig = &OD_APP_SHADOW.x20E2_IIT_SUM_1,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20E3_THERMAL_WINDING_TIME_CONSTANT_2 = {
+        .dataOrig = &OD_PERSIST_TMC.x20E3_THERMAL_WINDING_TIME_CONSTANT_2,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20E4_IIT_LIMIT_2 = {
+        .dataOrig = &OD_PERSIST_TMC.x20E4_IIT_LIMIT_2,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20E5_IIT_SUM_2 = {
+        .dataOrig = &OD_APP_SHADOW.x20E5_IIT_SUM_2,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20E6_RESET_IIT_SUMS = {
+        .dataOrig = &OD_APP_SHADOW.x20E6_RESET_IIT_SUMS,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20E7_ACTUAL_TOTAL_MOTOR_CURRENT = {
+        .dataOrig = &OD_APP_SHADOW.x20E7_ACTUAL_TOTAL_MOTOR_CURRENT,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20E9_PWM_L_OUTPUT_POLARITY = {
+        .dataOrig = &OD_PERSIST_TMC.x20E9_PWM_L_OUTPUT_POLARITY,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20EA_PWM_H_OUTPUT_POLARITY = {
+        .dataOrig = &OD_PERSIST_TMC.x20EA_PWM_H_OUTPUT_POLARITY,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20EB_BREAK_BEFORE_MAKE_TIME_LOW_UVW = {
+        .dataOrig = &OD_PERSIST_TMC.x20EB_BREAK_BEFORE_MAKE_TIME_LOW_UVW,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20EC_BREAK_BEFORE_MAKE_TIME_HIGH_UVW = {
+        .dataOrig = &OD_PERSIST_TMC.x20EC_BREAK_BEFORE_MAKE_TIME_HIGH_UVW,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20ED_BREAK_BEFORE_MAKE_TIME_LOW_Y2 = {
+        .dataOrig = &OD_PERSIST_TMC.x20ED_BREAK_BEFORE_MAKE_TIME_LOW_Y2,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20EE_BREAK_BEFORE_MAKE_TIME_HIGH_Y2 = {
+        .dataOrig = &OD_PERSIST_TMC.x20EE_BREAK_BEFORE_MAKE_TIME_HIGH_Y2,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20EF_USE_ADAPTIVE_DRIVE_TIME_UVW = {
+        .dataOrig = &OD_PERSIST_TMC.x20EF_USE_ADAPTIVE_DRIVE_TIME_UVW,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20F0_USE_ADAPTIVE_DRIVE_TIME_Y2 = {
+        .dataOrig = &OD_PERSIST_TMC.x20F0_USE_ADAPTIVE_DRIVE_TIME_Y2,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20F1_DRIVE_TIME_SINK_UVW = {
+        .dataOrig = &OD_PERSIST_TMC.x20F1_DRIVE_TIME_SINK_UVW,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20F2_DRIVE_TIME_SOURCE_UVW = {
+        .dataOrig = &OD_PERSIST_TMC.x20F2_DRIVE_TIME_SOURCE_UVW,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20F3_DRIVE_TIME_SINK_Y2 = {
+        .dataOrig = &OD_PERSIST_TMC.x20F3_DRIVE_TIME_SINK_Y2,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20F4_DRIVE_TIME_SOURCE_Y2 = {
+        .dataOrig = &OD_PERSIST_TMC.x20F4_DRIVE_TIME_SOURCE_Y2,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20F5_UVW_SINK_CURRENT = {
+        .dataOrig = &OD_PERSIST_TMC.x20F5_UVW_SINK_CURRENT,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20F6_UVW_SOURCE_CURRENT = {
+        .dataOrig = &OD_PERSIST_TMC.x20F6_UVW_SOURCE_CURRENT,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20F7_Y2_SINK_CURRENT = {
+        .dataOrig = &OD_PERSIST_TMC.x20F7_Y2_SINK_CURRENT,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20F8_Y2_SOURCE_CURRENT = {
+        .dataOrig = &OD_PERSIST_TMC.x20F8_Y2_SOURCE_CURRENT,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20F9_BOOTSTRAP_CURRENT_LIMIT = {
+        .dataOrig = &OD_PERSIST_TMC.x20F9_BOOTSTRAP_CURRENT_LIMIT,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20FA_UNDERVOLTAGE_PROTECTION_SUPPLY_LEVEL = {
+        .dataOrig = &OD_PERSIST_TMC.x20FA_UNDERVOLTAGE_PROTECTION_SUPPLY_LEVEL,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20FB_UNDERVOLTAGE_PROTECTION_VDRV_ENABLE = {
+        .dataOrig = &OD_PERSIST_TMC.x20FB_UNDERVOLTAGE_PROTECTION_VDRV_ENABLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20FC_UNDERVOLTAGE_PROTECTION_BST_UVW_ENABLE = {
+        .dataOrig = &OD_PERSIST_TMC.x20FC_UNDERVOLTAGE_PROTECTION_BST_UVW_ENABLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20FD_UNDERVOLTAGE_PROTECTION_BST_Y2_ENABLE = {
+        .dataOrig = &OD_PERSIST_TMC.x20FD_UNDERVOLTAGE_PROTECTION_BST_Y2_ENABLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20FE_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_ENABLE = {
+        .dataOrig = &OD_PERSIST_TMC.x20FE_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_ENABLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_20FF_OVERCURRENT_PROTECTION_UVW_HIGH_SIDE_ENABLE = {
+        .dataOrig = &OD_PERSIST_TMC.x20FF_OVERCURRENT_PROTECTION_UVW_HIGH_SIDE_ENABLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2100_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_ENABLE = {
+        .dataOrig = &OD_PERSIST_TMC.x2100_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_ENABLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2101_OVERCURRENT_PROTECTION_Y2_HIGH_SIDE_ENABLE = {
+        .dataOrig = &OD_PERSIST_TMC.x2101_OVERCURRENT_PROTECTION_Y2_HIGH_SIDE_ENABLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2102_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_THRESHOLD = {
+        .dataOrig = &OD_PERSIST_TMC.x2102_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_THRESHOLD,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2103_OVERCURRENT_PROTECTION_UVW_HIGH_SIDE_THRESHOLD = {
+        .dataOrig = &OD_PERSIST_TMC.x2103_OVERCURRENT_PROTECTION_UVW_HIGH_SIDE_THRESHOLD,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2104_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_THRESHOLD = {
+        .dataOrig = &OD_PERSIST_TMC.x2104_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_THRESHOLD,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2105_OVERCURRENT_PROTECTION_Y2_HIGH_SIDE_THRESHOLD = {
+        .dataOrig = &OD_PERSIST_TMC.x2105_OVERCURRENT_PROTECTION_Y2_HIGH_SIDE_THRESHOLD,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2106_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_BLANKING = {
+        .dataOrig = &OD_PERSIST_TMC.x2106_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_BLANKING,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2107_OVERCURRENT_PROTECTION_UVW_HIGH_SIDE_BLANKING = {
+        .dataOrig = &OD_PERSIST_TMC.x2107_OVERCURRENT_PROTECTION_UVW_HIGH_SIDE_BLANKING,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2108_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_BLANKING = {
+        .dataOrig = &OD_PERSIST_TMC.x2108_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_BLANKING,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2109_OVERCURRENT_PROTECTION_Y2_HIGH_SIDE_BLANKING = {
+        .dataOrig = &OD_PERSIST_TMC.x2109_OVERCURRENT_PROTECTION_Y2_HIGH_SIDE_BLANKING,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_210A_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_DEGLITCH = {
+        .dataOrig = &OD_PERSIST_TMC.x210A_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_DEGLITCH,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_210B_OVERCURRENT_PROTECTION_UVW_HIGH_SIDE_DEGLITCH = {
+        .dataOrig = &OD_PERSIST_TMC.x210B_OVERCURRENT_PROTECTION_UVW_HIGH_SIDE_DEGLITCH,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_210C_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_DEGLITCH = {
+        .dataOrig = &OD_PERSIST_TMC.x210C_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_DEGLITCH,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_210D_OVERCURRENT_PROTECTION_Y2_HIGH_SIDE_DEGLITCH = {
+        .dataOrig = &OD_PERSIST_TMC.x210D_OVERCURRENT_PROTECTION_Y2_HIGH_SIDE_DEGLITCH,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_210E_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_USE_VDS = {
+        .dataOrig = &OD_PERSIST_TMC.x210E_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_USE_VDS,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_210F_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_USE_VDS = {
+        .dataOrig = &OD_PERSIST_TMC.x210F_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_USE_VDS,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2110_VGS_SHORT_ON_PROTECTION_UVW_LOW_SIDE_ENABLE = {
+        .dataOrig = &OD_PERSIST_TMC.x2110_VGS_SHORT_ON_PROTECTION_UVW_LOW_SIDE_ENABLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2111_VGS_SHORT_OFF_PROTECTION_UVW_LOW_SIDE_ENABLE = {
+        .dataOrig = &OD_PERSIST_TMC.x2111_VGS_SHORT_OFF_PROTECTION_UVW_LOW_SIDE_ENABLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2112_VGS_SHORT_ON_PROTECTION_UVW_HIGH_SIDE_ENABLE = {
+        .dataOrig = &OD_PERSIST_TMC.x2112_VGS_SHORT_ON_PROTECTION_UVW_HIGH_SIDE_ENABLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2113_VGS_SHORT_OFF_PROTECTION_UVW_HIGH_SIDE_ENABLE = {
+        .dataOrig = &OD_PERSIST_TMC.x2113_VGS_SHORT_OFF_PROTECTION_UVW_HIGH_SIDE_ENABLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2114_VGS_SHORT_ON_PROTECTION_Y2_LOW_SIDE_ENABLE = {
+        .dataOrig = &OD_PERSIST_TMC.x2114_VGS_SHORT_ON_PROTECTION_Y2_LOW_SIDE_ENABLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2115_VGS_SHORT_OFF_PROTECTION_Y2_LOW_SIDE_ENABLE = {
+        .dataOrig = &OD_PERSIST_TMC.x2115_VGS_SHORT_OFF_PROTECTION_Y2_LOW_SIDE_ENABLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2116_VGS_SHORT_ON_PROTECTION_Y2_HIGH_SIDE_ENABLE = {
+        .dataOrig = &OD_PERSIST_TMC.x2116_VGS_SHORT_ON_PROTECTION_Y2_HIGH_SIDE_ENABLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2117_VGS_SHORT_OFF_PROTECTION_Y2_HIGH_SIDE_ENABLE = {
+        .dataOrig = &OD_PERSIST_TMC.x2117_VGS_SHORT_OFF_PROTECTION_Y2_HIGH_SIDE_ENABLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2118_VGS_SHORT_PROTECTION_UVW_BLANKING = {
+        .dataOrig = &OD_PERSIST_TMC.x2118_VGS_SHORT_PROTECTION_UVW_BLANKING,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2119_VGS_SHORT_PROTECTION_Y2_BLANKING = {
+        .dataOrig = &OD_PERSIST_TMC.x2119_VGS_SHORT_PROTECTION_Y2_BLANKING,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_211A_VGS_SHORT_PROTECTION_UVW_DEGLITCH = {
+        .dataOrig = &OD_PERSIST_TMC.x211A_VGS_SHORT_PROTECTION_UVW_DEGLITCH,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_211B_VGS_SHORT_PROTECTION_Y2_DEGLITCH = {
+        .dataOrig = &OD_PERSIST_TMC.x211B_VGS_SHORT_PROTECTION_Y2_DEGLITCH,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_211E_GDRV_RETRY_BEHAVIOUR = {
+        .dataOrig = &OD_PERSIST_TMC.x211E_GDRV_RETRY_BEHAVIOUR,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_211F_DRIVE_FAULT_BEHAVIOUR = {
+        .dataOrig = &OD_PERSIST_TMC.x211F_DRIVE_FAULT_BEHAVIOUR,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2120_FAULT_HANDLER_NUMBER_OF_RETRIES = {
+        .dataOrig = &OD_PERSIST_TMC.x2120_FAULT_HANDLER_NUMBER_OF_RETRIES,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2121_GENERAL_STATUS_FLAGS = {
+        .dataOrig = &OD_APP_SHADOW.x2121_GENERAL_STATUS_FLAGS,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2122_SUPPLY_VOLTAGE = {
+        .dataOrig = &OD_APP_SHADOW.x2122_SUPPLY_VOLTAGE,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2123_SUPPLY_OVERVOLTAGE_WARNING_THRESHOLD = {
+        .dataOrig = &OD_PERSIST_TMC.x2123_SUPPLY_OVERVOLTAGE_WARNING_THRESHOLD,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2124_SUPPLY_UNDERVOLTAGE_WARNING_THRESHOLD = {
+        .dataOrig = &OD_PERSIST_TMC.x2124_SUPPLY_UNDERVOLTAGE_WARNING_THRESHOLD,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2125_EXTERNAL_TEMPERATURE = {
+        .dataOrig = &OD_APP_SHADOW.x2125_EXTERNAL_TEMPERATURE,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2126_EXTERNAL_TEMPERATURE_SHUTDOWN_THRESHOLD = {
+        .dataOrig = &OD_PERSIST_TMC.x2126_EXTERNAL_TEMPERATURE_SHUTDOWN_THRESHOLD,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2127_EXTERNAL_TEMPERATURE_WARNING_THRESHOLD = {
+        .dataOrig = &OD_PERSIST_TMC.x2127_EXTERNAL_TEMPERATURE_WARNING_THRESHOLD,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2128_CHIP_TEMPERATURE = {
+        .dataOrig = &OD_APP_SHADOW.x2128_CHIP_TEMPERATURE,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2129_CHIP_TEMPERATURE_SHUTDOWN_THRESHOLD = {
+        .dataOrig = &OD_PERSIST_TMC.x2129_CHIP_TEMPERATURE_SHUTDOWN_THRESHOLD,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_212A_CHIP_TEMPERATURE_WARNING_THRESHOLD = {
+        .dataOrig = &OD_PERSIST_TMC.x212A_CHIP_TEMPERATURE_WARNING_THRESHOLD,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_212B_GENERAL_ERROR_FLAGS = {
+        .dataOrig = &OD_APP_SHADOW.x212B_GENERAL_ERROR_FLAGS,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_212C_GDRV_ERROR_FLAGS = {
+        .dataOrig = &OD_APP_SHADOW.x212C_GDRV_ERROR_FLAGS,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_212D_ADC_STATUS_FLAGS = {
+        .dataOrig = &OD_APP_SHADOW.x212D_ADC_STATUS_FLAGS,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2130_MCC_INPUTS_RAW = {
+        .dataOrig = &OD_APP_SHADOW.x2130_MCC_INPUTS_RAW,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2131_FOC_VOLTAGE_UX = {
+        .dataOrig = &OD_APP_SHADOW.x2131_FOC_VOLTAGE_UX,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2132_FOC_VOLTAGE_WY = {
+        .dataOrig = &OD_APP_SHADOW.x2132_FOC_VOLTAGE_WY,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2133_FOC_VOLTAGE_V = {
+        .dataOrig = &OD_APP_SHADOW.x2133_FOC_VOLTAGE_V,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2134_FIELDWEAKENING_I = {
+        .dataOrig = &OD_PERSIST_TMC.x2134_FIELDWEAKENING_I,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2136_FIELDWEAKENING_VOLTAGE_THRESHOLD = {
+        .dataOrig = &OD_PERSIST_TMC.x2136_FIELDWEAKENING_VOLTAGE_THRESHOLD,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2137_FOC_CURRENT_UX = {
+        .dataOrig = &OD_APP_SHADOW.x2137_FOC_CURRENT_UX,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2138_FOC_CURRENT_V = {
+        .dataOrig = &OD_APP_SHADOW.x2138_FOC_CURRENT_V,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2139_FOC_CURRENT_WY = {
+        .dataOrig = &OD_APP_SHADOW.x2139_FOC_CURRENT_WY,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_213A_FOC_VOLTAGE_UQ = {
+        .dataOrig = &OD_APP_SHADOW.x213A_FOC_VOLTAGE_UQ,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_213B_FOC_CURRENT_IQ = {
+        .dataOrig = &OD_APP_SHADOW.x213B_FOC_CURRENT_IQ,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_213E_TARGET_TORQUE_BIQUAD_FILTER_ENABLE = {
+        .dataOrig = &OD_PERSIST_TMC.x213E_TARGET_TORQUE_BIQUAD_FILTER_ENABLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_213F_TARGET_TORQUE_BIQUAD_FILTER_ACOEFF_1 = {
+        .dataOrig = &OD_PERSIST_TMC.x213F_TARGET_TORQUE_BIQUAD_FILTER_ACOEFF_1,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2140_TARGET_TORQUE_BIQUAD_FILTER_ACOEFF_2 = {
+        .dataOrig = &OD_PERSIST_TMC.x2140_TARGET_TORQUE_BIQUAD_FILTER_ACOEFF_2,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2141_TARGET_TORQUE_BIQUAD_FILTER_BCOEFF_0 = {
+        .dataOrig = &OD_PERSIST_TMC.x2141_TARGET_TORQUE_BIQUAD_FILTER_BCOEFF_0,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2142_TARGET_TORQUE_BIQUAD_FILTER_BCOEFF_1 = {
+        .dataOrig = &OD_PERSIST_TMC.x2142_TARGET_TORQUE_BIQUAD_FILTER_BCOEFF_1,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2143_TARGET_TORQUE_BIQUAD_FILTER_BCOEFF_2 = {
+        .dataOrig = &OD_PERSIST_TMC.x2143_TARGET_TORQUE_BIQUAD_FILTER_BCOEFF_2,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2144_ACTUAL_VELOCITY_BIQUAD_FILTER_ENABLE = {
+        .dataOrig = &OD_PERSIST_TMC.x2144_ACTUAL_VELOCITY_BIQUAD_FILTER_ENABLE,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2145_ACTUAL_VELOCITY_BIQUAD_FILTER_ACOEFF_1 = {
+        .dataOrig = &OD_PERSIST_TMC.x2145_ACTUAL_VELOCITY_BIQUAD_FILTER_ACOEFF_1,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2146_ACTUAL_VELOCITY_BIQUAD_FILTER_ACOEFF_2 = {
+        .dataOrig = &OD_PERSIST_TMC.x2146_ACTUAL_VELOCITY_BIQUAD_FILTER_ACOEFF_2,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2147_ACTUAL_VELOCITY_BIQUAD_FILTER_BCOEFF_0 = {
+        .dataOrig = &OD_PERSIST_TMC.x2147_ACTUAL_VELOCITY_BIQUAD_FILTER_BCOEFF_0,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2148_ACTUAL_VELOCITY_BIQUAD_FILTER_BCOEFF_1 = {
+        .dataOrig = &OD_PERSIST_TMC.x2148_ACTUAL_VELOCITY_BIQUAD_FILTER_BCOEFF_1,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_2149_ACTUAL_VELOCITY_BIQUAD_FILTER_BCOEFF_2 = {
+        .dataOrig = &OD_PERSIST_TMC.x2149_ACTUAL_VELOCITY_BIQUAD_FILTER_BCOEFF_2,
+        .attribute = ODA_SDO_RW | ODA_RPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_214A_TORQUE_FLUX_COMBINED_TARGET_VALUES = {
+        .dataOrig = &OD_APP_SHADOW.x214A_TORQUE_FLUX_COMBINED_TARGET_VALUES,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_214B_TORQUE_FLUX_COMBINED_ACTUAL_VALUES = {
+        .dataOrig = &OD_APP_SHADOW.x214B_TORQUE_FLUX_COMBINED_ACTUAL_VALUES,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_214C_VOLTAGE_D_Q_COMBINED_ACTUAL_VALUES = {
+        .dataOrig = &OD_APP_SHADOW.x214C_VOLTAGE_D_Q_COMBINED_ACTUAL_VALUES,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_214D_INTEGRATED_ACTUAL_TORQUE_VALUE = {
+        .dataOrig = &OD_APP_SHADOW.x214D_INTEGRATED_ACTUAL_TORQUE_VALUE,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
+    .o_214E_INTEGRATED_ACTUAL_VELOCITY_VALUE = {
+        .dataOrig = &OD_APP_SHADOW.x214E_INTEGRATED_ACTUAL_VELOCITY_VALUE,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
     },
     .o_6040_controlword = {
         .dataOrig = &OD_RAM.x6040_controlword,
@@ -1500,7 +3520,295 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x1A02, 0x09, ODT_REC, &ODObjs.o_1A02_TPDOMappingParameter, NULL},
     {0x1A03, 0x09, ODT_REC, &ODObjs.o_1A03_TPDOMappingParameter, NULL},
     {0x1A04, 0x09, ODT_REC, &ODObjs.o_1A04_TPDOMappingParameter, NULL},
-    {0x2122, 0x01, ODT_VAR, &ODObjs.o_2122_TMC9660SUPPLY_VOLTAGE, NULL},
+    {0x2000, 0x01, ODT_VAR, &ODObjs.o_2000_MOTOR_TYPE, NULL},
+    {0x2001, 0x01, ODT_VAR, &ODObjs.o_2001_MOTOR_POLE_PAIRS, NULL},
+    {0x2002, 0x01, ODT_VAR, &ODObjs.o_2002_MOTOR_DIRECTION, NULL},
+    {0x2003, 0x01, ODT_VAR, &ODObjs.o_2003_MOTOR_PWM_FREQUENCY, NULL},
+    {0x2004, 0x01, ODT_VAR, &ODObjs.o_2004_COMMUTATION_MODE, NULL},
+    {0x2005, 0x01, ODT_VAR, &ODObjs.o_2005_OUTPUT_VOLTAGE_LIMIT, NULL},
+    {0x2006, 0x01, ODT_VAR, &ODObjs.o_2006_MAX_TORQUE, NULL},
+    {0x2007, 0x01, ODT_VAR, &ODObjs.o_2007_MAX_FLUX, NULL},
+    {0x2008, 0x01, ODT_VAR, &ODObjs.o_2008_PWM_SWITCHING_SCHEME, NULL},
+    {0x2009, 0x01, ODT_VAR, &ODObjs.o_2009_IDLE_MOTOR_PWM_BEHAVIOR, NULL},
+    {0x200C, 0x01, ODT_VAR, &ODObjs.o_200C_ADC_SHUNT_TYPE, NULL},
+    {0x200D, 0x01, ODT_VAR, &ODObjs.o_200D_ADC_I0_RAW, NULL},
+    {0x200E, 0x01, ODT_VAR, &ODObjs.o_200E_ADC_I1_RAW, NULL},
+    {0x200F, 0x01, ODT_VAR, &ODObjs.o_200F_ADC_I2_RAW, NULL},
+    {0x2010, 0x01, ODT_VAR, &ODObjs.o_2010_ADC_I3_RAW, NULL},
+    {0x2011, 0x01, ODT_VAR, &ODObjs.o_2011_CSA_GAIN_ADC_I0_TO_ADC_I2, NULL},
+    {0x2012, 0x01, ODT_VAR, &ODObjs.o_2012_CSA_GAIN_ADC_I3, NULL},
+    {0x2013, 0x01, ODT_VAR, &ODObjs.o_2013_CSA_FILTER_ADC_I0_TO_ADC_I2, NULL},
+    {0x2014, 0x01, ODT_VAR, &ODObjs.o_2014_CSA_FILTER_ADC_I3, NULL},
+    {0x2015, 0x01, ODT_VAR, &ODObjs.o_2015_CURRENT_SCALING_FACTOR, NULL},
+    {0x2016, 0x01, ODT_VAR, &ODObjs.o_2016_PHASE_UX1_ADC_MAPPING, NULL},
+    {0x2017, 0x01, ODT_VAR, &ODObjs.o_2017_PHASE_VX2_ADC_MAPPING, NULL},
+    {0x2018, 0x01, ODT_VAR, &ODObjs.o_2018_PHASE_WY1_ADC_MAPPING, NULL},
+    {0x2019, 0x01, ODT_VAR, &ODObjs.o_2019_PHASE_Y2_ADC_MAPPING, NULL},
+    {0x201A, 0x01, ODT_VAR, &ODObjs.o_201A_ADC_I0_SCALE, NULL},
+    {0x201B, 0x01, ODT_VAR, &ODObjs.o_201B_ADC_I1_SCALE, NULL},
+    {0x201C, 0x01, ODT_VAR, &ODObjs.o_201C_ADC_I2_SCALE, NULL},
+    {0x201D, 0x01, ODT_VAR, &ODObjs.o_201D_ADC_I3_SCALE, NULL},
+    {0x201E, 0x01, ODT_VAR, &ODObjs.o_201E_ADC_I0_INVERTED, NULL},
+    {0x201F, 0x01, ODT_VAR, &ODObjs.o_201F_ADC_I1_INVERTED, NULL},
+    {0x2020, 0x01, ODT_VAR, &ODObjs.o_2020_ADC_I2_INVERTED, NULL},
+    {0x2021, 0x01, ODT_VAR, &ODObjs.o_2021_ADC_I3_INVERTED, NULL},
+    {0x2022, 0x01, ODT_VAR, &ODObjs.o_2022_ADC_I0_OFFSET, NULL},
+    {0x2023, 0x01, ODT_VAR, &ODObjs.o_2023_ADC_I1_OFFSET, NULL},
+    {0x2024, 0x01, ODT_VAR, &ODObjs.o_2024_ADC_I2_OFFSET, NULL},
+    {0x2025, 0x01, ODT_VAR, &ODObjs.o_2025_ADC_I3_OFFSET, NULL},
+    {0x2026, 0x01, ODT_VAR, &ODObjs.o_2026_ADC_I0, NULL},
+    {0x2027, 0x01, ODT_VAR, &ODObjs.o_2027_ADC_I1, NULL},
+    {0x2028, 0x01, ODT_VAR, &ODObjs.o_2028_ADC_I2, NULL},
+    {0x2029, 0x01, ODT_VAR, &ODObjs.o_2029_ADC_I3, NULL},
+    {0x202D, 0x01, ODT_VAR, &ODObjs.o_202D_OPENLOOP_ANGLE, NULL},
+    {0x202E, 0x01, ODT_VAR, &ODObjs.o_202E_OPENLOOP_CURRENT, NULL},
+    {0x202F, 0x01, ODT_VAR, &ODObjs.o_202F_OPENLOOP_VOLTAGE, NULL},
+    {0x2032, 0x01, ODT_VAR, &ODObjs.o_2032_ACCELERATION_FF_GAIN, NULL},
+    {0x2033, 0x01, ODT_VAR, &ODObjs.o_2033_ACCELERATION_FF_SHIFT, NULL},
+    {0x2034, 0x01, ODT_VAR, &ODObjs.o_2034_RAMP_ENABLE, NULL},
+    {0x2035, 0x01, ODT_VAR, &ODObjs.o_2035_DIRECT_VELOCITY_MODE, NULL},
+    {0x2036, 0x01, ODT_VAR, &ODObjs.o_2036_RAMP_AMAX, NULL},
+    {0x2037, 0x01, ODT_VAR, &ODObjs.o_2037_RAMP_A1, NULL},
+    {0x2038, 0x01, ODT_VAR, &ODObjs.o_2038_RAMP_A2, NULL},
+    {0x2039, 0x01, ODT_VAR, &ODObjs.o_2039_RAMP_DMAX, NULL},
+    {0x203A, 0x01, ODT_VAR, &ODObjs.o_203A_RAMP_D1, NULL},
+    {0x203B, 0x01, ODT_VAR, &ODObjs.o_203B_RAMP_D2, NULL},
+    {0x203C, 0x01, ODT_VAR, &ODObjs.o_203C_RAMP_VMAX, NULL},
+    {0x203D, 0x01, ODT_VAR, &ODObjs.o_203D_RAMP_V1, NULL},
+    {0x203E, 0x01, ODT_VAR, &ODObjs.o_203E_RAMP_V2, NULL},
+    {0x203F, 0x01, ODT_VAR, &ODObjs.o_203F_RAMP_VSTART, NULL},
+    {0x2040, 0x01, ODT_VAR, &ODObjs.o_2040_RAMP_VSTOP, NULL},
+    {0x2041, 0x01, ODT_VAR, &ODObjs.o_2041_RAMP_TVMAX, NULL},
+    {0x2042, 0x01, ODT_VAR, &ODObjs.o_2042_RAMP_TZEROWAIT, NULL},
+    {0x2043, 0x01, ODT_VAR, &ODObjs.o_2043_ACCELERATION_FEEDFORWARD_ENABLE, NULL},
+    {0x2044, 0x01, ODT_VAR, &ODObjs.o_2044_VELOCITY_FEEDFORWARD_ENABLE, NULL},
+    {0x2045, 0x01, ODT_VAR, &ODObjs.o_2045_RAMP_VELOCITY, NULL},
+    {0x2046, 0x01, ODT_VAR, &ODObjs.o_2046_RAMP_POSITION, NULL},
+    {0x204A, 0x01, ODT_VAR, &ODObjs.o_204A_HALL_PHI_E, NULL},
+    {0x204B, 0x01, ODT_VAR, &ODObjs.o_204B_HALL_SECTOR_OFFSET, NULL},
+    {0x204C, 0x01, ODT_VAR, &ODObjs.o_204C_HALL_FILTER_LENGTH, NULL},
+    {0x204D, 0x01, ODT_VAR, &ODObjs.o_204D_HALL_POSITION_0_OFFSET, NULL},
+    {0x204E, 0x01, ODT_VAR, &ODObjs.o_204E_HALL_POSITION_60_OFFSET, NULL},
+    {0x204F, 0x01, ODT_VAR, &ODObjs.o_204F_HALL_POSITION_120_OFFSET, NULL},
+    {0x2050, 0x01, ODT_VAR, &ODObjs.o_2050_HALL_POSITION_180_OFFSET, NULL},
+    {0x2051, 0x01, ODT_VAR, &ODObjs.o_2051_HALL_POSITION_240_OFFSET, NULL},
+    {0x2052, 0x01, ODT_VAR, &ODObjs.o_2052_HALL_POSITION_300_OFFSET, NULL},
+    {0x2053, 0x01, ODT_VAR, &ODObjs.o_2053_HALL_INVERT_DIRECTION, NULL},
+    {0x2054, 0x01, ODT_VAR, &ODObjs.o_2054_HALL_EXTRAPOLATION_ENABLE, NULL},
+    {0x2055, 0x01, ODT_VAR, &ODObjs.o_2055_HALL_PHI_E_OFFSET, NULL},
+    {0x2059, 0x01, ODT_VAR, &ODObjs.o_2059_ABN_1_PHI_E, NULL},
+    {0x205A, 0x01, ODT_VAR, &ODObjs.o_205A_ABN_1_STEPS, NULL},
+    {0x205B, 0x01, ODT_VAR, &ODObjs.o_205B_ABN_1_DIRECTION, NULL},
+    {0x205C, 0x01, ODT_VAR, &ODObjs.o_205C_ABN_1_INIT_METHOD, NULL},
+    {0x205D, 0x01, ODT_VAR, &ODObjs.o_205D_ABN_1_INIT_STATE, NULL},
+    {0x205E, 0x01, ODT_VAR, &ODObjs.o_205E_ABN_1_INIT_DELAY, NULL},
+    {0x205F, 0x01, ODT_VAR, &ODObjs.o_205F_ABN_1_INIT_VELOCITY, NULL},
+    {0x2060, 0x01, ODT_VAR, &ODObjs.o_2060_ABN_1_N_CHANNEL_PHI_E_OFFSET, NULL},
+    {0x2061, 0x01, ODT_VAR, &ODObjs.o_2061_ABN_1_N_CHANNEL_INVERTED, NULL},
+    {0x2062, 0x01, ODT_VAR, &ODObjs.o_2062_ABN_1_N_CHANNEL_FILTERING, NULL},
+    {0x2063, 0x01, ODT_VAR, &ODObjs.o_2063_ABN_1_CLEAR_ON_NEXT_NULL, NULL},
+    {0x2064, 0x01, ODT_VAR, &ODObjs.o_2064_ABN_1_VALUE, NULL},
+    {0x2068, 0x01, ODT_VAR, &ODObjs.o_2068_TARGET_TORQUE, NULL},
+    {0x2069, 0x01, ODT_VAR, &ODObjs.o_2069_ACTUAL_TORQUE, NULL},
+    {0x206A, 0x01, ODT_VAR, &ODObjs.o_206A_TARGET_FLUX, NULL},
+    {0x206B, 0x01, ODT_VAR, &ODObjs.o_206B_ACTUAL_FLUX, NULL},
+    {0x206C, 0x01, ODT_VAR, &ODObjs.o_206C_TORQUE_OFFSET, NULL},
+    {0x206D, 0x01, ODT_VAR, &ODObjs.o_206D_TORQUE_P, NULL},
+    {0x206E, 0x01, ODT_VAR, &ODObjs.o_206E_TORQUE_I, NULL},
+    {0x206F, 0x01, ODT_VAR, &ODObjs.o_206F_FLUX_P, NULL},
+    {0x2070, 0x01, ODT_VAR, &ODObjs.o_2070_FLUX_I, NULL},
+    {0x2071, 0x01, ODT_VAR, &ODObjs.o_2071_SEPARATE_TORQUE_FLUX_PI_PARAMTERS, NULL},
+    {0x2072, 0x01, ODT_VAR, &ODObjs.o_2072_CURRENT_NORM_P, NULL},
+    {0x2073, 0x01, ODT_VAR, &ODObjs.o_2073_CURRENT_NORM_I, NULL},
+    {0x2074, 0x01, ODT_VAR, &ODObjs.o_2074_TORQUE_PI_ERROR, NULL},
+    {0x2075, 0x01, ODT_VAR, &ODObjs.o_2075_FLUX_PI_ERROR, NULL},
+    {0x2076, 0x01, ODT_VAR, &ODObjs.o_2076_TORQUE_PI_INTEGRATOR, NULL},
+    {0x2077, 0x01, ODT_VAR, &ODObjs.o_2077_FLUX_PI_INTEGRATOR, NULL},
+    {0x2078, 0x01, ODT_VAR, &ODObjs.o_2078_FLUX_OFFSET, NULL},
+    {0x207B, 0x01, ODT_VAR, &ODObjs.o_207B_VELOCITY_SENSOR_SELECTION, NULL},
+    {0x207C, 0x01, ODT_VAR, &ODObjs.o_207C_TARGET_VELOCITY, NULL},
+    {0x207D, 0x01, ODT_VAR, &ODObjs.o_207D_ACTUAL_VELOCITY, NULL},
+    {0x207E, 0x01, ODT_VAR, &ODObjs.o_207E_VELOCITY_OFFSET, NULL},
+    {0x207F, 0x01, ODT_VAR, &ODObjs.o_207F_VELOCITY_P, NULL},
+    {0x2080, 0x01, ODT_VAR, &ODObjs.o_2080_VELOCITY_I, NULL},
+    {0x2081, 0x01, ODT_VAR, &ODObjs.o_2081_VELOCITY_NORM_P, NULL},
+    {0x2082, 0x01, ODT_VAR, &ODObjs.o_2082_VELOCITY_NORM_I, NULL},
+    {0x2083, 0x01, ODT_VAR, &ODObjs.o_2083_VELOCITY_PI_INTEGRATOR, NULL},
+    {0x2084, 0x01, ODT_VAR, &ODObjs.o_2084_VELOCITY_PI_ERROR, NULL},
+    {0x2085, 0x01, ODT_VAR, &ODObjs.o_2085_VELOCITY_SCALING_FACTOR, NULL},
+    {0x2086, 0x01, ODT_VAR, &ODObjs.o_2086_STOP_ON_VELOCITY_DEVIATION, NULL},
+    {0x2087, 0x01, ODT_VAR, &ODObjs.o_2087_VELOCITY_LOOP_DOWNSAMPLING, NULL},
+    {0x2088, 0x01, ODT_VAR, &ODObjs.o_2088_VELOCITY_REACHED_THRESHOLD, NULL},
+    {0x2089, 0x01, ODT_VAR, &ODObjs.o_2089_VELOCITY_METER_SWITCH_THRESHOLD, NULL},
+    {0x208A, 0x01, ODT_VAR, &ODObjs.o_208A_VELOCITY_METER_SWITCH_HYSTERESIS, NULL},
+    {0x208B, 0x01, ODT_VAR, &ODObjs.o_208B_VELOCITY_METER_MODE, NULL},
+    {0x208E, 0x01, ODT_VAR, &ODObjs.o_208E_POSITION_SENSOR_SELECTION, NULL},
+    {0x208F, 0x01, ODT_VAR, &ODObjs.o_208F_TARGET_POSITION, NULL},
+    {0x2090, 0x01, ODT_VAR, &ODObjs.o_2090_ACTUAL_POSITION, NULL},
+    {0x2091, 0x01, ODT_VAR, &ODObjs.o_2091_POSITION_SCALING_FACTOR, NULL},
+    {0x2092, 0x01, ODT_VAR, &ODObjs.o_2092_POSITION_P, NULL},
+    {0x2093, 0x01, ODT_VAR, &ODObjs.o_2093_POSITION_I, NULL},
+    {0x2094, 0x01, ODT_VAR, &ODObjs.o_2094_POSITION_NORM_P, NULL},
+    {0x2095, 0x01, ODT_VAR, &ODObjs.o_2095_POSITION_NORM_I, NULL},
+    {0x2096, 0x01, ODT_VAR, &ODObjs.o_2096_POSITION_PI_INTEGRATOR, NULL},
+    {0x2097, 0x01, ODT_VAR, &ODObjs.o_2097_POSITION_PI_ERROR, NULL},
+    {0x2098, 0x01, ODT_VAR, &ODObjs.o_2098_STOP_ON_POSITION_DEVIATION, NULL},
+    {0x2099, 0x01, ODT_VAR, &ODObjs.o_2099_POSITION_LOOP_DOWNSAMPLING, NULL},
+    {0x209A, 0x01, ODT_VAR, &ODObjs.o_209A_LATCH_POSITION, NULL},
+    {0x209B, 0x01, ODT_VAR, &ODObjs.o_209B_POSITION_LIMIT_LOW, NULL},
+    {0x209C, 0x01, ODT_VAR, &ODObjs.o_209C_POSITION_LIMIT_HIGH, NULL},
+    {0x209D, 0x01, ODT_VAR, &ODObjs.o_209D_POSITION_REACHED_THRESHOLD, NULL},
+    {0x20A1, 0x01, ODT_VAR, &ODObjs.o_20A1_REFERENCE_SWITCH_ENABLE, NULL},
+    {0x20A2, 0x01, ODT_VAR, &ODObjs.o_20A2_REFERENCE_SWITCH_POLARITY_AND_SWAP, NULL},
+    {0x20A3, 0x01, ODT_VAR, &ODObjs.o_20A3_REFERENCE_SWITCH_LATCH_SETTINGS, NULL},
+    {0x20A4, 0x01, ODT_VAR, &ODObjs.o_20A4_EVENT_STOP_SETTINGS, NULL},
+    {0x20A5, 0x01, ODT_VAR, &ODObjs.o_20A5_REFERENCE_SWITCH_SEARCH_MODE, NULL},
+    {0x20A6, 0x01, ODT_VAR, &ODObjs.o_20A6_REFERENCE_SWITCH_SEARCH_SPEED, NULL},
+    {0x20A7, 0x01, ODT_VAR, &ODObjs.o_20A7_REFERENCE_SWITCH_SPEED, NULL},
+    {0x20A8, 0x01, ODT_VAR, &ODObjs.o_20A8_RIGHT_LIMIT_SWITCH_POSITION, NULL},
+    {0x20A9, 0x01, ODT_VAR, &ODObjs.o_20A9_HOME_SWITCH_POSITION, NULL},
+    {0x20AA, 0x01, ODT_VAR, &ODObjs.o_20AA_LAST_REFERENCE_POSITION, NULL},
+    {0x20AE, 0x01, ODT_VAR, &ODObjs.o_20AE_ABN_2_STEPS, NULL},
+    {0x20AF, 0x01, ODT_VAR, &ODObjs.o_20AF_ABN_2_DIRECTION, NULL},
+    {0x20B0, 0x01, ODT_VAR, &ODObjs.o_20B0_ABN_2_GEAR_RATIO, NULL},
+    {0x20B1, 0x01, ODT_VAR, &ODObjs.o_20B1_ABN_2_ENABLE, NULL},
+    {0x20B2, 0x01, ODT_VAR, &ODObjs.o_20B2_ABN_2_VALUE, NULL},
+    {0x20B5, 0x01, ODT_VAR, &ODObjs.o_20B5_SPI_ENCODE_CS_SETTLE_DELAY_TIME, NULL},
+    {0x20B6, 0x01, ODT_VAR, &ODObjs.o_20B6_SPI_ENCODER_CS_IDLE_DELAY_TIME, NULL},
+    {0x20B7, 0x01, ODT_VAR, &ODObjs.o_20B7_SPI_ENCODER_MAIN_TRANSFER_CMD_SIZE, NULL},
+    {0x20B8, 0x01, ODT_VAR, &ODObjs.o_20B8_SPI_ENCODER_SECONDARY_TRANSFER_CMD_SIZE, NULL},
+    {0x20B9, 0x01, ODT_VAR, &ODObjs.o_20B9_SPI_ENCODER_TRANSFER_DATA_3_0, NULL},
+    {0x20BA, 0x01, ODT_VAR, &ODObjs.o_20BA_SPI_ENCODER_TRANSFER_DATA_7_4, NULL},
+    {0x20BB, 0x01, ODT_VAR, &ODObjs.o_20BB_SPI_ENCODER_TRANSFER_DATA_11_8, NULL},
+    {0x20BC, 0x01, ODT_VAR, &ODObjs.o_20BC_SPI_ENCODER_TRANSFER_DATA_15_12, NULL},
+    {0x20BD, 0x01, ODT_VAR, &ODObjs.o_20BD_SPI_ENCODER_TRANSFER, NULL},
+    {0x20BE, 0x01, ODT_VAR, &ODObjs.o_20BE_SPI_ENCODER_POSITION_COUNTER_MASK, NULL},
+    {0x20BF, 0x01, ODT_VAR, &ODObjs.o_20BF_SPI_ENCODER_POSITION_COUNTER_SHIFT, NULL},
+    {0x20C0, 0x01, ODT_VAR, &ODObjs.o_20C0_SPI_ENCODER_POSITION_COUNTER_VALUE, NULL},
+    {0x20C1, 0x01, ODT_VAR, &ODObjs.o_20C1_SPI_ENCODER_COMMUTATION_ANGLE, NULL},
+    {0x20C2, 0x01, ODT_VAR, &ODObjs.o_20C2_SPI_ENCODER_INITIALIZATION_METHOD, NULL},
+    {0x20C3, 0x01, ODT_VAR, &ODObjs.o_20C3_SPI_ENCODER_DIRECTION, NULL},
+    {0x20C4, 0x01, ODT_VAR, &ODObjs.o_20C4_SPI_ENCODER_OFFSET, NULL},
+    {0x20C5, 0x01, ODT_VAR, &ODObjs.o_20C5_SPI_LUT_CORRECTION_ENABLE, NULL},
+    {0x20C6, 0x01, ODT_VAR, &ODObjs.o_20C6_SPI_LUT_ADDRESS_SELECT, NULL},
+    {0x20C7, 0x01, ODT_VAR, &ODObjs.o_20C7_SPI_LUT_DATA, NULL},
+    {0x20C9, 0x01, ODT_VAR, &ODObjs.o_20C9_SPI_LUT_COMMON_SHIFT_FACTOR, NULL},
+    {0x20CD, 0x01, ODT_VAR, &ODObjs.o_20CD_STEP_DIR_STEP_DIVIDER_SHIFT, NULL},
+    {0x20CE, 0x01, ODT_VAR, &ODObjs.o_20CE_STEP_DIR_ENABLE, NULL},
+    {0x20CF, 0x01, ODT_VAR, &ODObjs.o_20CF_STEP_DIR_EXTRAPOLATION_ENABLE, NULL},
+    {0x20D0, 0x01, ODT_VAR, &ODObjs.o_20D0_STEP_DIR_STEP_SIGNAL_TIMEOUT_LIMIT, NULL},
+    {0x20D1, 0x01, ODT_VAR, &ODObjs.o_20D1_STEP_DIR_MAXIMUM_EXTRAPOLATION_VELOCITY, NULL},
+    {0x20D4, 0x01, ODT_VAR, &ODObjs.o_20D4_BRAKE_CHOPPER_ENABLE, NULL},
+    {0x20D5, 0x01, ODT_VAR, &ODObjs.o_20D5_BRAKE_CHOPPER_VOLTAGE_LIMIT, NULL},
+    {0x20D6, 0x01, ODT_VAR, &ODObjs.o_20D6_BRAKE_CHOPPER_HYSTERESIS, NULL},
+    {0x20D8, 0x01, ODT_VAR, &ODObjs.o_20D8_RELEASE_BRAKE, NULL},
+    {0x20D9, 0x01, ODT_VAR, &ODObjs.o_20D9_BRAKE_RELEASING_DUTY_CYCLE, NULL},
+    {0x20DA, 0x01, ODT_VAR, &ODObjs.o_20DA_BRAKE_HOLDING_DUTY_CYCLE, NULL},
+    {0x20DB, 0x01, ODT_VAR, &ODObjs.o_20DB_BRAKE_RELEASING_DURATION, NULL},
+    {0x20DD, 0x01, ODT_VAR, &ODObjs.o_20DD_INVERT_BRAKE_OUTPUT, NULL},
+    {0x20E0, 0x01, ODT_VAR, &ODObjs.o_20E0_THERMAL_WINDING_TIME_CONSTANT_1, NULL},
+    {0x20E1, 0x01, ODT_VAR, &ODObjs.o_20E1_IIT_LIMIT_1, NULL},
+    {0x20E2, 0x01, ODT_VAR, &ODObjs.o_20E2_IIT_SUM_1, NULL},
+    {0x20E3, 0x01, ODT_VAR, &ODObjs.o_20E3_THERMAL_WINDING_TIME_CONSTANT_2, NULL},
+    {0x20E4, 0x01, ODT_VAR, &ODObjs.o_20E4_IIT_LIMIT_2, NULL},
+    {0x20E5, 0x01, ODT_VAR, &ODObjs.o_20E5_IIT_SUM_2, NULL},
+    {0x20E6, 0x01, ODT_VAR, &ODObjs.o_20E6_RESET_IIT_SUMS, NULL},
+    {0x20E7, 0x01, ODT_VAR, &ODObjs.o_20E7_ACTUAL_TOTAL_MOTOR_CURRENT, NULL},
+    {0x20E9, 0x01, ODT_VAR, &ODObjs.o_20E9_PWM_L_OUTPUT_POLARITY, NULL},
+    {0x20EA, 0x01, ODT_VAR, &ODObjs.o_20EA_PWM_H_OUTPUT_POLARITY, NULL},
+    {0x20EB, 0x01, ODT_VAR, &ODObjs.o_20EB_BREAK_BEFORE_MAKE_TIME_LOW_UVW, NULL},
+    {0x20EC, 0x01, ODT_VAR, &ODObjs.o_20EC_BREAK_BEFORE_MAKE_TIME_HIGH_UVW, NULL},
+    {0x20ED, 0x01, ODT_VAR, &ODObjs.o_20ED_BREAK_BEFORE_MAKE_TIME_LOW_Y2, NULL},
+    {0x20EE, 0x01, ODT_VAR, &ODObjs.o_20EE_BREAK_BEFORE_MAKE_TIME_HIGH_Y2, NULL},
+    {0x20EF, 0x01, ODT_VAR, &ODObjs.o_20EF_USE_ADAPTIVE_DRIVE_TIME_UVW, NULL},
+    {0x20F0, 0x01, ODT_VAR, &ODObjs.o_20F0_USE_ADAPTIVE_DRIVE_TIME_Y2, NULL},
+    {0x20F1, 0x01, ODT_VAR, &ODObjs.o_20F1_DRIVE_TIME_SINK_UVW, NULL},
+    {0x20F2, 0x01, ODT_VAR, &ODObjs.o_20F2_DRIVE_TIME_SOURCE_UVW, NULL},
+    {0x20F3, 0x01, ODT_VAR, &ODObjs.o_20F3_DRIVE_TIME_SINK_Y2, NULL},
+    {0x20F4, 0x01, ODT_VAR, &ODObjs.o_20F4_DRIVE_TIME_SOURCE_Y2, NULL},
+    {0x20F5, 0x01, ODT_VAR, &ODObjs.o_20F5_UVW_SINK_CURRENT, NULL},
+    {0x20F6, 0x01, ODT_VAR, &ODObjs.o_20F6_UVW_SOURCE_CURRENT, NULL},
+    {0x20F7, 0x01, ODT_VAR, &ODObjs.o_20F7_Y2_SINK_CURRENT, NULL},
+    {0x20F8, 0x01, ODT_VAR, &ODObjs.o_20F8_Y2_SOURCE_CURRENT, NULL},
+    {0x20F9, 0x01, ODT_VAR, &ODObjs.o_20F9_BOOTSTRAP_CURRENT_LIMIT, NULL},
+    {0x20FA, 0x01, ODT_VAR, &ODObjs.o_20FA_UNDERVOLTAGE_PROTECTION_SUPPLY_LEVEL, NULL},
+    {0x20FB, 0x01, ODT_VAR, &ODObjs.o_20FB_UNDERVOLTAGE_PROTECTION_VDRV_ENABLE, NULL},
+    {0x20FC, 0x01, ODT_VAR, &ODObjs.o_20FC_UNDERVOLTAGE_PROTECTION_BST_UVW_ENABLE, NULL},
+    {0x20FD, 0x01, ODT_VAR, &ODObjs.o_20FD_UNDERVOLTAGE_PROTECTION_BST_Y2_ENABLE, NULL},
+    {0x20FE, 0x01, ODT_VAR, &ODObjs.o_20FE_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_ENABLE, NULL},
+    {0x20FF, 0x01, ODT_VAR, &ODObjs.o_20FF_OVERCURRENT_PROTECTION_UVW_HIGH_SIDE_ENABLE, NULL},
+    {0x2100, 0x01, ODT_VAR, &ODObjs.o_2100_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_ENABLE, NULL},
+    {0x2101, 0x01, ODT_VAR, &ODObjs.o_2101_OVERCURRENT_PROTECTION_Y2_HIGH_SIDE_ENABLE, NULL},
+    {0x2102, 0x01, ODT_VAR, &ODObjs.o_2102_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_THRESHOLD, NULL},
+    {0x2103, 0x01, ODT_VAR, &ODObjs.o_2103_OVERCURRENT_PROTECTION_UVW_HIGH_SIDE_THRESHOLD, NULL},
+    {0x2104, 0x01, ODT_VAR, &ODObjs.o_2104_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_THRESHOLD, NULL},
+    {0x2105, 0x01, ODT_VAR, &ODObjs.o_2105_OVERCURRENT_PROTECTION_Y2_HIGH_SIDE_THRESHOLD, NULL},
+    {0x2106, 0x01, ODT_VAR, &ODObjs.o_2106_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_BLANKING, NULL},
+    {0x2107, 0x01, ODT_VAR, &ODObjs.o_2107_OVERCURRENT_PROTECTION_UVW_HIGH_SIDE_BLANKING, NULL},
+    {0x2108, 0x01, ODT_VAR, &ODObjs.o_2108_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_BLANKING, NULL},
+    {0x2109, 0x01, ODT_VAR, &ODObjs.o_2109_OVERCURRENT_PROTECTION_Y2_HIGH_SIDE_BLANKING, NULL},
+    {0x210A, 0x01, ODT_VAR, &ODObjs.o_210A_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_DEGLITCH, NULL},
+    {0x210B, 0x01, ODT_VAR, &ODObjs.o_210B_OVERCURRENT_PROTECTION_UVW_HIGH_SIDE_DEGLITCH, NULL},
+    {0x210C, 0x01, ODT_VAR, &ODObjs.o_210C_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_DEGLITCH, NULL},
+    {0x210D, 0x01, ODT_VAR, &ODObjs.o_210D_OVERCURRENT_PROTECTION_Y2_HIGH_SIDE_DEGLITCH, NULL},
+    {0x210E, 0x01, ODT_VAR, &ODObjs.o_210E_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_USE_VDS, NULL},
+    {0x210F, 0x01, ODT_VAR, &ODObjs.o_210F_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_USE_VDS, NULL},
+    {0x2110, 0x01, ODT_VAR, &ODObjs.o_2110_VGS_SHORT_ON_PROTECTION_UVW_LOW_SIDE_ENABLE, NULL},
+    {0x2111, 0x01, ODT_VAR, &ODObjs.o_2111_VGS_SHORT_OFF_PROTECTION_UVW_LOW_SIDE_ENABLE, NULL},
+    {0x2112, 0x01, ODT_VAR, &ODObjs.o_2112_VGS_SHORT_ON_PROTECTION_UVW_HIGH_SIDE_ENABLE, NULL},
+    {0x2113, 0x01, ODT_VAR, &ODObjs.o_2113_VGS_SHORT_OFF_PROTECTION_UVW_HIGH_SIDE_ENABLE, NULL},
+    {0x2114, 0x01, ODT_VAR, &ODObjs.o_2114_VGS_SHORT_ON_PROTECTION_Y2_LOW_SIDE_ENABLE, NULL},
+    {0x2115, 0x01, ODT_VAR, &ODObjs.o_2115_VGS_SHORT_OFF_PROTECTION_Y2_LOW_SIDE_ENABLE, NULL},
+    {0x2116, 0x01, ODT_VAR, &ODObjs.o_2116_VGS_SHORT_ON_PROTECTION_Y2_HIGH_SIDE_ENABLE, NULL},
+    {0x2117, 0x01, ODT_VAR, &ODObjs.o_2117_VGS_SHORT_OFF_PROTECTION_Y2_HIGH_SIDE_ENABLE, NULL},
+    {0x2118, 0x01, ODT_VAR, &ODObjs.o_2118_VGS_SHORT_PROTECTION_UVW_BLANKING, NULL},
+    {0x2119, 0x01, ODT_VAR, &ODObjs.o_2119_VGS_SHORT_PROTECTION_Y2_BLANKING, NULL},
+    {0x211A, 0x01, ODT_VAR, &ODObjs.o_211A_VGS_SHORT_PROTECTION_UVW_DEGLITCH, NULL},
+    {0x211B, 0x01, ODT_VAR, &ODObjs.o_211B_VGS_SHORT_PROTECTION_Y2_DEGLITCH, NULL},
+    {0x211E, 0x01, ODT_VAR, &ODObjs.o_211E_GDRV_RETRY_BEHAVIOUR, NULL},
+    {0x211F, 0x01, ODT_VAR, &ODObjs.o_211F_DRIVE_FAULT_BEHAVIOUR, NULL},
+    {0x2120, 0x01, ODT_VAR, &ODObjs.o_2120_FAULT_HANDLER_NUMBER_OF_RETRIES, NULL},
+    {0x2121, 0x01, ODT_VAR, &ODObjs.o_2121_GENERAL_STATUS_FLAGS, NULL},
+    {0x2122, 0x01, ODT_VAR, &ODObjs.o_2122_SUPPLY_VOLTAGE, NULL},
+    {0x2123, 0x01, ODT_VAR, &ODObjs.o_2123_SUPPLY_OVERVOLTAGE_WARNING_THRESHOLD, NULL},
+    {0x2124, 0x01, ODT_VAR, &ODObjs.o_2124_SUPPLY_UNDERVOLTAGE_WARNING_THRESHOLD, NULL},
+    {0x2125, 0x01, ODT_VAR, &ODObjs.o_2125_EXTERNAL_TEMPERATURE, NULL},
+    {0x2126, 0x01, ODT_VAR, &ODObjs.o_2126_EXTERNAL_TEMPERATURE_SHUTDOWN_THRESHOLD, NULL},
+    {0x2127, 0x01, ODT_VAR, &ODObjs.o_2127_EXTERNAL_TEMPERATURE_WARNING_THRESHOLD, NULL},
+    {0x2128, 0x01, ODT_VAR, &ODObjs.o_2128_CHIP_TEMPERATURE, NULL},
+    {0x2129, 0x01, ODT_VAR, &ODObjs.o_2129_CHIP_TEMPERATURE_SHUTDOWN_THRESHOLD, NULL},
+    {0x212A, 0x01, ODT_VAR, &ODObjs.o_212A_CHIP_TEMPERATURE_WARNING_THRESHOLD, NULL},
+    {0x212B, 0x01, ODT_VAR, &ODObjs.o_212B_GENERAL_ERROR_FLAGS, NULL},
+    {0x212C, 0x01, ODT_VAR, &ODObjs.o_212C_GDRV_ERROR_FLAGS, NULL},
+    {0x212D, 0x01, ODT_VAR, &ODObjs.o_212D_ADC_STATUS_FLAGS, NULL},
+    {0x2130, 0x01, ODT_VAR, &ODObjs.o_2130_MCC_INPUTS_RAW, NULL},
+    {0x2131, 0x01, ODT_VAR, &ODObjs.o_2131_FOC_VOLTAGE_UX, NULL},
+    {0x2132, 0x01, ODT_VAR, &ODObjs.o_2132_FOC_VOLTAGE_WY, NULL},
+    {0x2133, 0x01, ODT_VAR, &ODObjs.o_2133_FOC_VOLTAGE_V, NULL},
+    {0x2134, 0x01, ODT_VAR, &ODObjs.o_2134_FIELDWEAKENING_I, NULL},
+    {0x2136, 0x01, ODT_VAR, &ODObjs.o_2136_FIELDWEAKENING_VOLTAGE_THRESHOLD, NULL},
+    {0x2137, 0x01, ODT_VAR, &ODObjs.o_2137_FOC_CURRENT_UX, NULL},
+    {0x2138, 0x01, ODT_VAR, &ODObjs.o_2138_FOC_CURRENT_V, NULL},
+    {0x2139, 0x01, ODT_VAR, &ODObjs.o_2139_FOC_CURRENT_WY, NULL},
+    {0x213A, 0x01, ODT_VAR, &ODObjs.o_213A_FOC_VOLTAGE_UQ, NULL},
+    {0x213B, 0x01, ODT_VAR, &ODObjs.o_213B_FOC_CURRENT_IQ, NULL},
+    {0x213E, 0x01, ODT_VAR, &ODObjs.o_213E_TARGET_TORQUE_BIQUAD_FILTER_ENABLE, NULL},
+    {0x213F, 0x01, ODT_VAR, &ODObjs.o_213F_TARGET_TORQUE_BIQUAD_FILTER_ACOEFF_1, NULL},
+    {0x2140, 0x01, ODT_VAR, &ODObjs.o_2140_TARGET_TORQUE_BIQUAD_FILTER_ACOEFF_2, NULL},
+    {0x2141, 0x01, ODT_VAR, &ODObjs.o_2141_TARGET_TORQUE_BIQUAD_FILTER_BCOEFF_0, NULL},
+    {0x2142, 0x01, ODT_VAR, &ODObjs.o_2142_TARGET_TORQUE_BIQUAD_FILTER_BCOEFF_1, NULL},
+    {0x2143, 0x01, ODT_VAR, &ODObjs.o_2143_TARGET_TORQUE_BIQUAD_FILTER_BCOEFF_2, NULL},
+    {0x2144, 0x01, ODT_VAR, &ODObjs.o_2144_ACTUAL_VELOCITY_BIQUAD_FILTER_ENABLE, NULL},
+    {0x2145, 0x01, ODT_VAR, &ODObjs.o_2145_ACTUAL_VELOCITY_BIQUAD_FILTER_ACOEFF_1, NULL},
+    {0x2146, 0x01, ODT_VAR, &ODObjs.o_2146_ACTUAL_VELOCITY_BIQUAD_FILTER_ACOEFF_2, NULL},
+    {0x2147, 0x01, ODT_VAR, &ODObjs.o_2147_ACTUAL_VELOCITY_BIQUAD_FILTER_BCOEFF_0, NULL},
+    {0x2148, 0x01, ODT_VAR, &ODObjs.o_2148_ACTUAL_VELOCITY_BIQUAD_FILTER_BCOEFF_1, NULL},
+    {0x2149, 0x01, ODT_VAR, &ODObjs.o_2149_ACTUAL_VELOCITY_BIQUAD_FILTER_BCOEFF_2, NULL},
+    {0x214A, 0x01, ODT_VAR, &ODObjs.o_214A_TORQUE_FLUX_COMBINED_TARGET_VALUES, NULL},
+    {0x214B, 0x01, ODT_VAR, &ODObjs.o_214B_TORQUE_FLUX_COMBINED_ACTUAL_VALUES, NULL},
+    {0x214C, 0x01, ODT_VAR, &ODObjs.o_214C_VOLTAGE_D_Q_COMBINED_ACTUAL_VALUES, NULL},
+    {0x214D, 0x01, ODT_VAR, &ODObjs.o_214D_INTEGRATED_ACTUAL_TORQUE_VALUE, NULL},
+    {0x214E, 0x01, ODT_VAR, &ODObjs.o_214E_INTEGRATED_ACTUAL_VELOCITY_VALUE, NULL},
     {0x6040, 0x01, ODT_VAR, &ODObjs.o_6040_controlword, NULL},
     {0x6041, 0x01, ODT_VAR, &ODObjs.o_6041_statusword, NULL},
     {0x6060, 0x01, ODT_VAR, &ODObjs.o_6060_modesOfOperation, NULL},
