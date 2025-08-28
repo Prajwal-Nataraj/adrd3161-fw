@@ -9,6 +9,8 @@
 #include <zephyr/drivers/spi.h>
 #include <zephyr/drivers/can.h>
 #include <zephyr/logging/log.h>
+#include <zephyr/storage/flash_map.h>
+#include <zephyr/fs/zms.h>
 #include <canopennode.h>
 #include <app_version.h>
 
@@ -37,6 +39,23 @@ static const struct gpio_dt_spec dip3 = GPIO_DT_SPEC_GET_BY_IDX(DT_PATH(buttons,
 const struct device *g_tmc9660 = DEVICE_DT_GET(DT_NODELABEL(tmc9660));
 struct canopen co;
 struct cia402 cia402;
+
+#define PARTITION        storage_partition
+#define PARTITION_DEVICE FIXED_PARTITION_DEVICE(PARTITION)
+#define PARTITION_OFFSET FIXED_PARTITION_OFFSET(PARTITION)
+
+struct zms_fs fs = {
+    .offset = PARTITION_OFFSET,
+    .sector_size = 8192,
+    .sector_count = 2,
+    .flash_device = DEVICE_DT_GET(DT_CHOSEN(zephyr_flash))
+};
+
+CANOPEN_STORAGE_DEFINE(
+    storage_entries,
+    CANOPEN_STORAGE_ENTRY(OD_PERSIST_COMM, 2, CO_storage_cmd), // index 2 = communication params
+    CANOPEN_STORAGE_ENTRY(OD_PERSIST_TMC, 4, CO_storage_cmd) // index 4 = manufacturer specific
+);
 
 /* Indicator LEDs */
 
@@ -323,8 +342,6 @@ static void can_debug_state() {
     prev_state = state;
 }
 
-K_TIMER_DEFINE(supply_voltage_timer, NULL, NULL);
-
 int main()
 {
     int err;
@@ -343,9 +360,6 @@ int main()
 
     // Make sure motor is stopped
     tmc9660_motor_stop(g_tmc9660);
-
-    // Initialize nonvolatile storage
-    // storage_init();
 
     // Initialize and read DIP switches for CAN and I2C ID
     err = gpio_pin_configure_dt(&dip1, GPIO_INPUT);
@@ -399,8 +413,6 @@ int main()
     OD_extension_init(OD_ENTRY_H6061_modesOfOperationDisplay, &mopd_ext);
     OD_extension_init(OD_ENTRY_H6040_controlword, &cw_ext);
 
-    tmc_params_init(); // Set up extensions for TMC parameters
-
     cia402_init(&cia402);
 
     // Initialize and start CANOpen
@@ -411,6 +423,11 @@ int main()
     co.nmt_control = CO_NMT_STARTUP_TO_OPERATIONAL;
     co.led_callback = led_callback;
     co.sync_callback = sync_callback;
+#if CO_CONFIG_STORAGE & CO_CONFIG_STORAGE_ENABLE
+    co.storage_entries = storage_entries;
+    co.storage_entries_count = ARRAY_SIZE(storage_entries);
+#endif  // CO_CONFIG_STORAGE
+
     err = canopen_init(&co);
     if(err < 0)
     {
@@ -418,9 +435,9 @@ int main()
         goto fail;
     }
 
-    // Start timer for reading supply voltage regularly
-    k_timer_start(&supply_voltage_timer, K_MSEC(1000), K_MSEC(1000));
-
+    // Write persisted params to TMC and set up extensions for intercepting reads and writes
+    tmc_params_init();
+    
     LOG_INF("Initialization OK!");
 
     // Main loop for housekeeping
@@ -437,13 +454,13 @@ int main()
             cia402_enter_fault(&cia402);
         }
 
-        if(k_timer_status_get(&supply_voltage_timer)) {
+        /*if(k_timer_status_get(&supply_voltage_timer)) {
             int32_t supply_voltage;
             tmc9660_get_param(g_tmc9660, SUPPLY_VOLTAGE, &supply_voltage);
             //CO_LOCK_OD(CO->CANmodule);
             OD_set_u16(OD_ENTRY_H2122_SUPPLY_VOLTAGE, 0, (uint16_t) supply_voltage, false);
             //CO_UNLOCK_OD(CO->CANmodule);
-        }
+        }*/
 
         k_msleep(1);
     }

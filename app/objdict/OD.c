@@ -230,6 +230,10 @@ OD_ATTR_PERSIST_COMM OD_PERSIST_COMM_t OD_PERSIST_COMM = {
 
 OD_ATTR_RAM OD_RAM_t OD_RAM = {
     .x1001_errorRegister = 0x00,
+    .x1010_storeParameters_sub0 = 0x04,
+    .x1010_storeParameters = {0x00000001, 0x00000001, 0x00000001, 0x00000001},
+    .x1011_restoreDefaultParameters_sub0 = 0x04,
+    .x1011_restoreDefaultParameters = {0x00000000, 0x00000000, 0x00000000, 0x00000000},
     .x1200_SDOServerParameter = {
         .highestSub_indexSupported = 0x02,
         .COB_IDClientToServerRx = 0x00000600,
@@ -567,6 +571,8 @@ typedef struct {
     OD_obj_var_t o_1008_manufacturerDeviceName;
     OD_obj_var_t o_1009_manufacturerHardwareVersion;
     OD_obj_var_t o_100A_manufacturerSoftwareVersion;
+    OD_obj_array_t o_1010_storeParameters;
+    OD_obj_array_t o_1011_restoreDefaultParameters;
     OD_obj_var_t o_1012_COB_IDTimeStampObject;
     OD_obj_var_t o_1014_COB_ID_EMCY;
     OD_obj_var_t o_1015_inhibitTimeEMCY;
@@ -953,6 +959,22 @@ static CO_PROGMEM ODObjs_t ODObjs = {
         .dataOrig = &OD_PERSIST_COMM.x100A_manufacturerSoftwareVersion[0],
         .attribute = ODA_SDO_R | ODA_STR,
         .dataLength = 12
+    },
+    .o_1010_storeParameters = {
+        .dataOrig0 = &OD_RAM.x1010_storeParameters_sub0,
+        .dataOrig = &OD_RAM.x1010_storeParameters[0],
+        .attribute0 = ODA_SDO_R,
+        .attribute = ODA_SDO_RW | ODA_MB,
+        .dataElementLength = 4,
+        .dataElementSizeof = sizeof(uint32_t)
+    },
+    .o_1011_restoreDefaultParameters = {
+        .dataOrig0 = &OD_RAM.x1011_restoreDefaultParameters_sub0,
+        .dataOrig = &OD_RAM.x1011_restoreDefaultParameters[0],
+        .attribute0 = ODA_SDO_R,
+        .attribute = ODA_SDO_RW | ODA_MB,
+        .dataElementLength = 4,
+        .dataElementSizeof = sizeof(uint32_t)
     },
     .o_1012_COB_IDTimeStampObject = {
         .dataOrig = &OD_PERSIST_COMM.x1012_COB_IDTimeStampObject,
@@ -3493,6 +3515,8 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x1008, 0x01, ODT_VAR, &ODObjs.o_1008_manufacturerDeviceName, NULL},
     {0x1009, 0x01, ODT_VAR, &ODObjs.o_1009_manufacturerHardwareVersion, NULL},
     {0x100A, 0x01, ODT_VAR, &ODObjs.o_100A_manufacturerSoftwareVersion, NULL},
+    {0x1010, 0x05, ODT_ARR, &ODObjs.o_1010_storeParameters, NULL},
+    {0x1011, 0x05, ODT_ARR, &ODObjs.o_1011_restoreDefaultParameters, NULL},
     {0x1012, 0x01, ODT_VAR, &ODObjs.o_1012_COB_IDTimeStampObject, NULL},
     {0x1014, 0x01, ODT_VAR, &ODObjs.o_1014_COB_ID_EMCY, NULL},
     {0x1015, 0x01, ODT_VAR, &ODObjs.o_1015_inhibitTimeEMCY, NULL},

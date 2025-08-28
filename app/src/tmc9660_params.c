@@ -33,6 +33,14 @@ ODR_t tmc_extension_write(OD_stream_t *stream, const void *buf, OD_size_t count,
 	LOG_DBG("OD write TMC param %d value %d returned %d", tmc_param_id, *(int32_t *)buf, ret);
 	*countWritten = 4;
 
+    // Mirror value in RAM as well
+    int actual_val = *(int32_t *)buf;
+    if(ret != 0) {
+        // Write failed, get actual valud
+        tmc9660_get_param(g_tmc9660, tmc_param_id, &actual_val);
+    }
+    *(int32_t *)stream->dataOrig = actual_val;
+
 	if(ret == 0) return ODR_OK;
 	if(ret == -EINVAL) return ODR_INVALID_VALUE;
 	if(ret == -EIO) return ODR_HW;
@@ -47,6 +55,10 @@ ODR_t tmc_extension_read(OD_stream_t *stream, void *buf, OD_size_t count, OD_siz
 	int ret = tmc9660_get_param_retry(g_tmc9660, tmc_param_id, buf, 3);
 	LOG_DBG("OD read TMC param %d value %d returned %d", tmc_param_id, *(int32_t *)buf, ret);
 	*countRead = 4;
+
+    // Mirror value in RAM as well
+    int actual_val = *(int32_t *)buf;
+    *(int32_t *)stream->dataOrig = actual_val;
 	
 	if(ret == 0) return ODR_OK;
 	if(ret == -EINVAL) return ODR_INVALID_VALUE;
@@ -61,7 +73,10 @@ void tmc_params_init(void) {
 	/* 
 	 * Iterate through all CANopen OD entries, mapping 0x2000 - 0x2200 to TMC parameters 0x000 - 0x200.
 	 * Set OD extensions with proper read/write handlers based on whether OD entry allows read/write.
+     * Set values based on what is in RAM (for startup). Should be run after canopen storage initialization populates OD_PERSIST_TMC with data from flash. 
 	 */
+
+    memset(tmc_params_extensions, 0, sizeof(tmc_params_extensions));
 
 	int ext_idx = 0;
 	for(int i = 0; i < OD->size; i++) {
@@ -70,6 +85,13 @@ void tmc_params_init(void) {
 		OD_extension_t *extension = &tmc_params_extensions[ext_idx];
 
 		if(entry->index < 0x2000 || entry->index > 0x2200) continue;
+
+		// Check if dataOrig (i.e. the place in RAM where the parameter value is actually stored)
+		// is inside OD_PERSIST_TMC. That means it's a parameter we persist, so which we want to
+		// synchronize between RAM and the TMC9660.
+		if(var->dataOrig >= (void*)&OD_PERSIST_TMC && var->dataOrig < (void*)(&OD_PERSIST_TMC+1)) {
+			tmc9660_set_param(g_tmc9660, entry->index - 0x2000, *(int*)var->dataOrig);
+		}
 
 		if((var->attribute & ODA_SDO_R) == ODA_SDO_R) {
 			extension->read = tmc_extension_read;

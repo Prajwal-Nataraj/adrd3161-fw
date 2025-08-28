@@ -11,7 +11,6 @@ Supported modes of operation:
 - profile torque (tq)
 
 Roadmap:
-- [ ] Expose all TMC9660 parameters via the OD
 - [ ] Simpler motor tuning procedure
 - [ ] Support RamDebug via SDO block transfer, to enable automated tuning
 
