@@ -30,6 +30,9 @@
 
 #ifndef OD_H
 #define OD_H
+
+#include <app_version.h>
+
 /*******************************************************************************
     Counters of OD objects
 *******************************************************************************/
@@ -66,7 +69,7 @@ typedef struct {
     uint32_t x1007_synchronousWindowLength;
     char x1008_manufacturerDeviceName[9];
     char x1009_manufacturerHardwareVersion[5];
-    char x100A_manufacturerSoftwareVersion[13];
+    char x100A_manufacturerSoftwareVersion[sizeof(STRINGIFY(APP_BUILD_VERSION))];
     uint32_t x1012_COB_IDTimeStampObject;
     uint32_t x1014_COB_ID_EMCY;
     uint16_t x1015_inhibitTimeEMCY;

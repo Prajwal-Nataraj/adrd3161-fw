@@ -348,9 +348,10 @@ int main()
 {
     int err;
 
-    calibrate_oscillator();
+    LOG_INF("Firmware git revision %s", OD_PERSIST_COMM.x100A_manufacturerSoftwareVersion);
+    LOG_INF("Serial number %d", OD_PERSIST_COMM.x1018_identity.serialNumber);
 
-    LOG_INF("Firmware git revision %s", STRINGIFY(APP_BUILD_VERSION));
+    calibrate_oscillator();
 
     // Initialize TMC9660
     if(!device_is_ready(g_tmc9660))
