@@ -21,6 +21,8 @@
 #include "OD.h"
 #include "tmc9660_params.h"
 
+#include "bodge.h"
+
 LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);
 
 static const struct gpio_dt_spec led_green = GPIO_DT_SPEC_GET(DT_PATH(leds, led_status), gpios);
@@ -345,6 +347,8 @@ static void can_debug_state() {
 int main()
 {
     int err;
+
+    calibrate_oscillator();
 
     LOG_INF("Firmware git revision %s", STRINGIFY(APP_BUILD_VERSION));
 
