@@ -76,8 +76,9 @@ void tmc_params_init(void) {
      * Set values based on what is in RAM (for startup). Should be run after canopen storage initialization populates OD_PERSIST_TMC with data from flash. 
 	 */
 
-    memset(tmc_params_extensions, 0, sizeof(tmc_params_extensions));
+	memset(tmc_params_extensions, 0, sizeof(tmc_params_extensions));
 
+	int ok = 0;
 	int ext_idx = 0;
 	for(int i = 0; i < OD->size; i++) {
 		OD_entry_t *entry = &OD->list[i];
@@ -90,7 +91,7 @@ void tmc_params_init(void) {
 		// is inside OD_PERSIST_TMC. That means it's a parameter we persist, so which we want to
 		// synchronize between RAM and the TMC9660.
 		if(var->dataOrig >= (void*)&OD_PERSIST_TMC && var->dataOrig < (void*)(&OD_PERSIST_TMC+1)) {
-			tmc9660_set_param(g_tmc9660, entry->index - 0x2000, *(int*)var->dataOrig);
+			ok |= tmc9660_set_param_retry(g_tmc9660, entry->index - 0x2000, *(int*)var->dataOrig, 3);
 		}
 
 		if((var->attribute & ODA_SDO_R) == ODA_SDO_R) {
@@ -103,6 +104,10 @@ void tmc_params_init(void) {
 
 		OD_extension_init(entry, extension);
 		ext_idx++;
+	}
+
+	if(ok) {
+		LOG_WRN("Not all TMC9660 parameters could be written!");
 	}
 }
 
