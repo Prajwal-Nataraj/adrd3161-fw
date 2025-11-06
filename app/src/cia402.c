@@ -415,8 +415,10 @@ void cia402_tick(struct cia402 *cia402, bool quick) {
 
 void cia402_enter_fault(struct cia402 *cia402) {
     k_mutex_lock(&cia402->priv->lock, K_FOREVER);
-    cia402->state = CIA402_STATE_FAULT_REACTION_ACTIVE;
-    enter_fault_reaction_active(cia402);
+    if(cia402->state != CIA402_STATE_FAULT && cia402->state != CIA402_STATE_FAULT_REACTION_ACTIVE) {
+	    cia402->state = CIA402_STATE_FAULT_REACTION_ACTIVE;
+	    enter_fault_reaction_active(cia402);
+    }
     k_mutex_unlock(&cia402->priv->lock);
 }
 

@@ -427,7 +427,7 @@ int main()
     co.node_id = 0x10 + dip_setting;
     LOG_INF("CANopen node ID = %d", co.node_id);
     co.bitrate = CAN_BITRATE;
-    co.nmt_control = CO_NMT_STARTUP_TO_OPERATIONAL;
+    co.nmt_control = 0; // CO_NMT_STARTUP_TO_OPERATIONAL;
     co.led_callback = led_callback;
     co.sync_callback = sync_callback;
 #if CO_CONFIG_STORAGE & CO_CONFIG_STORAGE_ENABLE
