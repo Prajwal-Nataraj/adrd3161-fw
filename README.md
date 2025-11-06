@@ -1,5 +1,7 @@
 # ADRD3161 Motor Control firmware
 
+Check out https://analogdevicesinc.github.io/documentation/solutions/reference-designs/adrd3161
+
 Implements CANOpen CiA 402 communication for the ADRD3161 Motor Control module.
 
 Supported modes of operation:
@@ -31,64 +33,6 @@ By default, the firmware exposes a UART shell. You may use the default Zephyr sh
 - `tmc rwe_save` - Save all current parameters to flash (run this after tuning)
 - `tmc rwe_load` - Load all RWE parameters from flash
 
-## Developing
-
-### Setting up Zephyr
-
-For more details, see the official [Zephyr Getting Started Guide](https://docs.zephyrproject.org/latest/develop/getting_started/index.html).
-
-If running Windows, WSL is highly recommended.
-
-Install prerequisite system packages:
-```
-sudo apt update
-sudo apt install --no-install-recommends git cmake ninja-build gperf \
-  ccache dfu-util device-tree-compiler wget \
-  python3-dev python3-pip python3-setuptools python3-tk python3-wheel xz-utils file \
-  make gcc gcc-multilib g++-multilib libsdl2-dev libmagic1
-```
-
-Create a folder with a python virtual environment:
-```
-mkdir ~/zephyrproject
-cd ~/zephyrproject
-python3 -m venv .venv
-source .venv/bin/activate
-```
-
-Install `west` (metatool that does everyhting zephyr-related) and do a basic
-setup:
-```
-pip install west
-west init -m https://github.com/analogdevicesinc/adrd3161-fw adrd3161-fw
-west update
-west zephyr-export
-west packages pip --install
-(cd zephyr; west sdk install)
-```
-
-### Building and flashing
-
-You must be located in the `adrd3161-fw` folder and have the virtualenv loaded (Run `source ~/zephyrproject/.venv/bin/activate` in every new terminal in which you need west commands).
-
-Build:
-```
-west build app -b adrd3161
-```
-
-Clean ("pristine") build:
-```
-west build app -b adrd3161 -p
-```
-
-Flash (assuming the DAPLINK is attached to WSL using USB/IP):
-```
-west flash --openocd-search /MaximSDK/Tools/OpenOCD/scripts/ --openocd /MaximSDK/Tools/OpenOCD/openocd
-```
-
-If it gets stuck during flashing, just try again, there's some embedded magic I
-don't understand going on and it only flashes every other try.
-
 ## Project structure
 
 Board definition:
@@ -109,11 +53,10 @@ Out-of-tree drivers:
 Application implementation:
 - `app`
     - `src`
-        - `cia402.c/h`: Implementation of the CiA 402 state machine, decoupled from CANOpen and motor control specifics
+        - `cia402.c/h`: Device-agnostic CiA 402 state machine implementation, decoupled from CANopen and motor control specifics
+        - `cia402_impl.h`: Interface between CiA 402 and application: "how do I spin a motor?"
         - `tmc9660.c/h`: TMC9660 parameter mode SPI driver
-        - `tmc9660_params.c/h`: Logic for saving/loading parameters to/from flash + default out-of-the-box parameters
-        - `storage.c/h`: Helper functions for nonvolatile storage
-        - `CO_config_custom.h`: Custom CANOpenNode configuration
+        - `tmc9660_params.c/h`: Logic for saving/loading TMC9660 parameters through the OD and UART shell
         - `main.c`
     - `objdict`: CANOpenNode object dictionary, EDS, XDD
     - `prj.conf`: Additional kconfig settings
