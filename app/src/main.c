@@ -351,7 +351,9 @@ int main()
     LOG_INF("Firmware git revision %s", OD_PERSIST_COMM.x100A_manufacturerSoftwareVersion);
     LOG_INF("Serial number %d", OD_PERSIST_COMM.x1018_identity.serialNumber);
 
+    k_msleep(50);
     calibrate_oscillator();
+    k_msleep(50);
 
     // Initialize TMC9660
     if(!device_is_ready(g_tmc9660))
