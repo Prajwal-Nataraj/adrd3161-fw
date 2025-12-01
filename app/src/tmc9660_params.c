@@ -258,7 +258,7 @@ int cmd_tmc_boot(struct shell *sh, int argc, char **argv) {
 SHELL_STATIC_SUBCMD_SET_CREATE(sub_tmc,
     SHELL_CMD_ARG(gap, NULL, "Get parameter", cmd_tmc_gap, 2, 0),
     SHELL_CMD_ARG(sap, NULL, "Set parameter", cmd_tmc_sap, 3, 0),
-    SHELL_CMD_ARG(flags, NULL, "Show current flags", cmd_tmc_flags, 0, 0),
+    SHELL_CMD(flags, NULL, "Show current flags", cmd_tmc_flags),
     // SHELL_CMD_ARG(rwe_show, NULL, "Show RWE parameters", cmd_tmc_rwe_show, 0, 1),
     // SHELL_CMD(rwe_save, NULL, "Save all current parameters to flash (run this after tuning)", cmd_tmc_rwe_save),
     // SHELL_CMD(rwe_load, NULL, "Load all RWE parameters from flash", cmd_tmc_rwe_load),

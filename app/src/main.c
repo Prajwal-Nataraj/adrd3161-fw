@@ -351,9 +351,6 @@ int main()
     LOG_INF("Firmware git revision %s", OD_PERSIST_COMM.x100A_manufacturerSoftwareVersion);
     LOG_INF("Serial number %d", OD_PERSIST_COMM.x1018_identity.serialNumber);
 
-    k_msleep(50);
-    calibrate_oscillator();
-    k_msleep(50);
 
     // Initialize TMC9660
     if(!device_is_ready(g_tmc9660))
@@ -367,6 +364,11 @@ int main()
 
     // Make sure motor is stopped
     tmc9660_motor_stop(g_tmc9660);
+
+    tmc9660_set_gpio(g_tmc9660, 16, 1);
+    calibrate_oscillator();
+    k_msleep(100);
+    tmc9660_set_gpio(g_tmc9660, 16, 0);
 
     // Initialize and read DIP switches for CAN and I2C ID
     err = gpio_pin_configure_dt(&dip1, GPIO_INPUT);
