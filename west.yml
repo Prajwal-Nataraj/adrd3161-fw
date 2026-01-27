@@ -12,7 +12,7 @@ manifest:
   projects:
     - name: zephyr
       remote: analogdevicesinc
-      revision: 3e934bc2553bf657b22fb59455446b4b50c3fa91
+      revision: 3b8c8cb54d685472ed4b4f8e50fceef92d8405c9
       import:
         name-allowlist:
           - hal_adi
