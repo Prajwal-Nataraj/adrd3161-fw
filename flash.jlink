@@ -1,0 +1,5 @@
+r
+loadfile C:\ADRD3161\adrd3161\adrd3161-fw\build\zephyr\zephyr.hex
+r
+g
+exit

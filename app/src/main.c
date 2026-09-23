@@ -34,6 +34,10 @@ static const struct gpio_dt_spec dip1 = GPIO_DT_SPEC_GET_BY_IDX(DT_PATH(buttons,
 static const struct gpio_dt_spec dip2 = GPIO_DT_SPEC_GET_BY_IDX(DT_PATH(buttons, dip), gpios, 1);
 static const struct gpio_dt_spec dip3 = GPIO_DT_SPEC_GET_BY_IDX(DT_PATH(buttons, dip), gpios, 2);
 
+// static const struct gpio_dt_spec gpio7 = GPIO_DT_SPEC_GET(DT_ALIAS(gpio7_test), gpios);
+// static const struct gpio_dt_spec gpio8 = GPIO_DT_SPEC_GET(DT_ALIAS(gpio8_test), gpios);
+// static const struct device *gpio0_dev = DEVICE_DT_GET(DT_NODELABEL(gpio0));
+
 #define CAN_BITRATE (DT_PROP_OR(DT_CHOSEN(zephyr_canbus), bitrate, \
 					  DT_PROP_OR(DT_CHOSEN(zephyr_canbus), bus_speed, \
 						     CONFIG_CAN_DEFAULT_BITRATE)) / 1000)
@@ -386,7 +390,23 @@ int main()
         LOG_ERR("Could not initialize DIP GPIO 3: %d", err);
         goto fail;
     }
-    
+
+    // if (!device_is_ready(gpio0_dev)) {
+    //     LOG_ERR("GPIO0 device not ready");
+    //     goto fail;
+    // }
+
+    // err = gpio_pin_configure(gpio0_dev, 7, GPIO_OUTPUT_INACTIVE);
+    // if(err < 0) {
+    //     LOG_ERR("Could not initialize GPIO 7: %d", err);
+    //     goto fail;
+    // }
+    // err = gpio_pin_configure(gpio0_dev, 8, GPIO_OUTPUT_INACTIVE);
+    // if(err < 0) {
+    //     LOG_ERR("Could not initialize GPIO 8: %d", err);
+    //     goto fail;
+    // }
+
     int dip_setting = (gpio_pin_get_dt(&dip1) << 2) | (gpio_pin_get_dt(&dip2) << 1) | (gpio_pin_get_dt(&dip3) << 0); // Looking at the DIP switch with "1 2 3" going left to right = reading the number in binary
     LOG_INF("DIP switches set to %d", dip_setting);
 
@@ -426,7 +446,7 @@ int main()
 
     // Initialize and start CANOpen
     co.can_dev = can;
-    co.node_id = 0x10 + dip_setting;
+    co.node_id = 0x30 + dip_setting;
     LOG_INF("CANopen node ID = %d", co.node_id);
     co.bitrate = CAN_BITRATE;
     co.nmt_control = 0; // CO_NMT_STARTUP_TO_OPERATIONAL;
@@ -470,6 +490,25 @@ int main()
             OD_set_u16(OD_ENTRY_H2122_SUPPLY_VOLTAGE, 0, (uint16_t) supply_voltage, false);
             //CO_UNLOCK_OD(CO->CANmodule);
         }*/
+
+        // static uint32_t gpio_toggle_cnt = 0;
+        // static bool gpio_state = 0;
+
+        // gpio_toggle_cnt++;
+
+        // if (gpio_toggle_cnt >= 500) {
+        //     gpio_toggle_cnt = 0;
+
+        //     gpio_state = !gpio_state;
+
+        //     gpio_pin_set(gpio0_dev, 7, gpio_state);
+        //     LOG_INF("GPIO7 toggle: %d", gpio_state);
+            
+        //     gpio_pin_set(gpio0_dev, 8, !gpio_state);
+        //     LOG_INF("GPIO8 toggle: %d", !gpio_state);
+
+        //     LOG_INF("\n\n");
+        // }
 
         k_msleep(1);
     }
