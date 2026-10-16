@@ -1835,7 +1835,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
 AccessType=rw
-DefaultValue=2
+DefaultValue=1
 PDOMapping=0
 
 [1A03sub1]
@@ -1844,7 +1844,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
-DefaultValue=0x60410010
+DefaultValue=0x22000020
 PDOMapping=0
 
 [1A03sub2]
@@ -1853,7 +1853,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
-DefaultValue=0x606C0020
+DefaultValue=0x00000000
 PDOMapping=0
 
 [1A03sub3]
