@@ -530,7 +530,7 @@ ObjectType=0x7
 ;StorageLocation=PERSIST_COMM
 DataType=0x0006
 AccessType=rw
-DefaultValue=200
+DefaultValue=0
 PDOMapping=0
 
 [1019]
@@ -2459,6 +2459,7 @@ SupportedObjects=289
 287=0x214C
 288=0x214D
 289=0x214E
+290=0x2200
 
 [2000]
 ParameterName=MOTOR_TYPE
@@ -5061,3 +5062,11 @@ AccessType=ro
 DefaultValue=0
 PDOMapping=1
 
+[2200]
+ParameterName=drv_DigInputs
+ObjectType=0x7
+;StorageLocation=RAM
+DataType=0x0007
+AccessType=ro
+DefaultValue=0
+PDOMapping=1

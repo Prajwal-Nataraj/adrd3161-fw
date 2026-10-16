@@ -946,7 +946,7 @@ The life time factor multiplied with the guard time gives the life time for the 
           <q1:parameter uniqueID="UID_OBJ_1017" access="readWrite">
             <description lang="en">Heartbeat producer time in ms (0 = disable transmission).</description>
             <UINT />
-            <q1:defaultValue value="200" />
+            <q1:defaultValue value="0" />
             <q1:property name="CO_countLabel" value="HB_PROD" />
             <q1:property name="CO_storageGroup" value="PERSIST_COMM" />
           </q1:parameter>
@@ -5847,6 +5847,15 @@ Min: 0; Max: 4294967295; Default: 0
             <q1:property name="CO_countLabel" value="TMC_PARAMS" />
             <q1:property name="CO_storageGroup" value="APP_SHADOW" />
           </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_2200">
+            <label lang="en">drv_DigInputs</label>
+            <description lang="en">Contains the status of the digital inputs and faults
+* bits 15-8: Faults
+* bits 7-0: MCU's Digital inputs
+  </description>
+            <UDINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
           <q1:parameter uniqueID="UID_OBJ_6040" access="readWrite">
             <description lang="en">Controls the CiA 402-1 state machine
 * bit 15-11: manufacturer specific
@@ -6608,6 +6617,7 @@ Min: 0; Max: 4294967295; Default: 0
           <CANopenObject index="214C" name="VOLTAGE_D_Q_COMBINED_ACTUAL_VALUES" objectType="7" PDOmapping="TPDO" uniqueIDRef="UID_OBJ_214C" />
           <CANopenObject index="214D" name="INTEGRATED_ACTUAL_TORQUE_VALUE" objectType="7" PDOmapping="TPDO" uniqueIDRef="UID_OBJ_214D" />
           <CANopenObject index="214E" name="INTEGRATED_ACTUAL_VELOCITY_VALUE" objectType="7" PDOmapping="TPDO" uniqueIDRef="UID_OBJ_214E" />
+          <CANopenObject index="2200" name="drv_DigInputs" objectType="7" PDOmapping="TPDO" uniqueIDRef="UID_OBJ_2200" />
           <CANopenObject index="6040" name="Controlword" objectType="7" PDOmapping="optional" uniqueIDRef="UID_OBJ_6040" />
           <CANopenObject index="6041" name="Statusword" objectType="7" PDOmapping="TPDO" uniqueIDRef="UID_OBJ_6041" />
           <CANopenObject index="6060" name="Modes of operation" objectType="7" PDOmapping="optional" uniqueIDRef="UID_OBJ_6060" />

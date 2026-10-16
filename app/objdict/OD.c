@@ -48,7 +48,7 @@ OD_ATTR_PERSIST_COMM OD_PERSIST_COMM_t OD_PERSIST_COMM = {
     },
     .x1400_RPDOCommunicationParameter = {
         .highestSub_indexSupported = 0x05,
-        .COB_IDUsedByRPDO = 0x00000210,
+        .COB_IDUsedByRPDO = 0x00000100,
         .transmissionType = 0xFF,
         .eventTimer = 0x0000
     },
@@ -157,7 +157,7 @@ OD_ATTR_PERSIST_COMM OD_PERSIST_COMM_t OD_PERSIST_COMM = {
     },
     .x1803_TPDOCommunicationParameter = {
         .highestSub_indexSupported = 0x06,
-        .COB_IDUsedByTPDO = 0xC0000000,
+        .COB_IDUsedByTPDO = 0x400004B9,
         .transmissionType = 0x01,
         .inhibitTime = 0x000A,
         .eventTimer = 0x0000,
@@ -205,9 +205,9 @@ OD_ATTR_PERSIST_COMM OD_PERSIST_COMM_t OD_PERSIST_COMM = {
         .applicationObject8 = 0x00000000
     },
     .x1A03_TPDOMappingParameter = {
-        .numberOfMappedApplicationObjectsInPDO = 0x02,
-        .applicationObject1 = 0x60410010,
-        .applicationObject2 = 0x606C0020,
+        .numberOfMappedApplicationObjectsInPDO = 0x01,
+        .applicationObject1 = 0x22000020,
+        .applicationObject2 = 0x00000000,
         .applicationObject3 = 0x00000000,
         .applicationObject4 = 0x00000000,
         .applicationObject5 = 0x00000000,
@@ -239,6 +239,7 @@ OD_ATTR_RAM OD_RAM_t OD_RAM = {
         .COB_IDClientToServerRx = 0x00000600,
         .COB_IDServerToClientTx = 0x00000580
     },
+    .x2200_drv_DigInputs = 0x00000000,
     .x6040_controlword = 0x0000,
     .x6041_statusword = 0x0000,
     .x6060_modesOfOperation = 0,
@@ -890,6 +891,7 @@ typedef struct {
     OD_obj_var_t o_214C_VOLTAGE_D_Q_COMBINED_ACTUAL_VALUES;
     OD_obj_var_t o_214D_INTEGRATED_ACTUAL_TORQUE_VALUE;
     OD_obj_var_t o_214E_INTEGRATED_ACTUAL_VELOCITY_VALUE;
+    OD_obj_var_t o_2200_drv_DigInputs;
     OD_obj_var_t o_6040_controlword;
     OD_obj_var_t o_6041_statusword;
     OD_obj_var_t o_6060_modesOfOperation;
@@ -3404,6 +3406,11 @@ static CO_PROGMEM ODObjs_t ODObjs = {
         .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
         .dataLength = 4
     },
+    .o_2200_drv_DigInputs = {
+        .dataOrig = &OD_RAM.x2200_drv_DigInputs,
+        .attribute = ODA_SDO_R | ODA_TPDO | ODA_MB,
+        .dataLength = 4
+    },
     .o_6040_controlword = {
         .dataOrig = &OD_RAM.x6040_controlword,
         .attribute = ODA_SDO_RW | ODA_TRPDO | ODA_MB,
@@ -3834,6 +3841,7 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x214C, 0x01, ODT_VAR, &ODObjs.o_214C_VOLTAGE_D_Q_COMBINED_ACTUAL_VALUES, NULL},
     {0x214D, 0x01, ODT_VAR, &ODObjs.o_214D_INTEGRATED_ACTUAL_TORQUE_VALUE, NULL},
     {0x214E, 0x01, ODT_VAR, &ODObjs.o_214E_INTEGRATED_ACTUAL_VELOCITY_VALUE, NULL},
+    {0x2200, 0x01, ODT_VAR, &ODObjs.o_2200_drv_DigInputs, NULL},
     {0x6040, 0x01, ODT_VAR, &ODObjs.o_6040_controlword, NULL},
     {0x6041, 0x01, ODT_VAR, &ODObjs.o_6041_statusword, NULL},
     {0x6060, 0x01, ODT_VAR, &ODObjs.o_6060_modesOfOperation, NULL},
