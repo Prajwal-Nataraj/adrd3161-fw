@@ -1463,7 +1463,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
-DefaultValue=$NODEID+0x40000480
+DefaultValue=0x400004B9
 PDOMapping=0
 
 [1803sub2]
