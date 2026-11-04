@@ -30,10 +30,6 @@ static const struct gpio_dt_spec led_fault = GPIO_DT_SPEC_GET(DT_PATH(buttons, f
 // static const struct spi_dt_spec spi0 = SPI_DT_SPEC_GET(DT_NODELABEL(tmc9660_spi), SPI_MODE_CPHA | SPI_MODE_CPOL | SPI_WORD_SET(8), 0);
 static const struct device *can = DEVICE_DT_GET(DT_CHOSEN(zephyr_canbus));
 
-static const struct gpio_dt_spec dip1 = GPIO_DT_SPEC_GET_BY_IDX(DT_PATH(buttons, dip), gpios, 0);
-static const struct gpio_dt_spec dip2 = GPIO_DT_SPEC_GET_BY_IDX(DT_PATH(buttons, dip), gpios, 1);
-static const struct gpio_dt_spec dip3 = GPIO_DT_SPEC_GET_BY_IDX(DT_PATH(buttons, dip), gpios, 2);
-
 #define CAN_BITRATE (DT_PROP_OR(DT_CHOSEN(zephyr_canbus), bitrate, \
 					  DT_PROP_OR(DT_CHOSEN(zephyr_canbus), bus_speed, \
 						     CONFIG_CAN_DEFAULT_BITRATE)) / 1000)
@@ -46,15 +42,22 @@ struct cia402 cia402;
 #define PARTITION_DEVICE FIXED_PARTITION_DEVICE(PARTITION)
 #define PARTITION_OFFSET FIXED_PARTITION_OFFSET(PARTITION)
 
-/* Safety Doors */
-static const struct device *gpio0_door = DEVICE_DT_GET(DT_NODELABEL(gpio0));
+/* Safety Doors, Faults and Limit Switches */
+static const struct device *gpio0_dr_ls = DEVICE_DT_GET(DT_NODELABEL(gpio0));       /* dr: Door, ls: Limit Switch */
 #define FRONT_DOOR_PIN  7
 #define REAR_DOOR_PIN   8
 #define FRONT_DOOR_BIT  2
 #define REAR_DOOR_BIT   1
 
+#define LIM_SW_UP_PIN   18
+#define LIM_SW_LO_PIN   19
+#define LIM_SW_UP_BIT   3
+#define LIM_SW_LO_BIT   4
+
 static struct gpio_callback front_door_gpio_cb;
 static struct gpio_callback rear_door_gpio_cb;
+static struct gpio_callback ls_up_gpio_cb;
+static struct gpio_callback ls_lo_gpio_cb;
 static struct k_spinlock drv_dig_inputs_lock;
 
 static void drv_dig_inputs_set_bit(uint32_t mask, bool set)
@@ -97,6 +100,34 @@ static void rear_door_gpio_callback(const struct device *port,
     int value = gpio_pin_get(port, REAR_DOOR_PIN);
     if (value >= 0) {
         drv_dig_inputs_set_bit(BIT(REAR_DOOR_BIT), value != 0);
+    }
+}
+
+static void ls_up_gpio_callback(const struct device *port,
+                                    struct gpio_callback *cb,
+                                    gpio_port_pins_t pins)
+{
+    if ((pins & BIT(LIM_SW_UP_PIN)) == 0U) {
+        return;
+    }
+
+    int value = gpio_pin_get(port, LIM_SW_UP_PIN);
+    if (value >= 0) {
+        drv_dig_inputs_set_bit(BIT(LIM_SW_UP_BIT), value != 0);
+    }
+}
+
+static void ls_lo_gpio_callback(const struct device *port,
+                                     struct gpio_callback *cb,
+                                     gpio_port_pins_t pins)
+{
+    if ((pins & BIT(LIM_SW_LO_PIN)) == 0U) {
+        return;
+    }
+
+    int value = gpio_pin_get(port, LIM_SW_LO_PIN);
+    if (value >= 0) {
+        drv_dig_inputs_set_bit(BIT(LIM_SW_LO_BIT), value != 0);
     }
 }
 
@@ -424,42 +455,30 @@ int main()
     k_msleep(100);
     tmc9660_set_gpio(g_tmc9660, 16, 0);
 
-    // Initialize and read DIP switches for CAN and I2C ID
-    err = gpio_pin_configure_dt(&dip1, GPIO_INPUT);
-    if(err < 0) {
-        LOG_ERR("Could not initialize DIP GPIO 1: %d", err);
-        goto fail;
-    }
-    err = gpio_pin_configure_dt(&dip2, GPIO_INPUT);
-    if(err < 0) {
-        LOG_ERR("Could not initialize DIP GPIO 2: %d", err);
-        goto fail;
-    }
-    err = gpio_pin_configure_dt(&dip3, GPIO_INPUT);
-    if(err < 0) {
-        LOG_ERR("Could not initialize DIP GPIO 3: %d", err);
-        goto fail;
-    }
-
-    if (!device_is_ready(gpio0_door)) {
+    if (!device_is_ready(gpio0_dr_ls)) {
         LOG_ERR("GPIO0 device not ready");
         goto fail;
     }
-    err = gpio_pin_configure(gpio0_door, FRONT_DOOR_PIN, GPIO_INPUT);
+    err = gpio_pin_configure(gpio0_dr_ls, FRONT_DOOR_PIN, GPIO_INPUT);
     if(err < 0) {
         LOG_ERR("Could not initialize GPIO %d: %d", FRONT_DOOR_PIN, err);
         goto fail;
     }
-    err = gpio_pin_configure(gpio0_door, REAR_DOOR_PIN, GPIO_INPUT);
+    err = gpio_pin_configure(gpio0_dr_ls, REAR_DOOR_PIN, GPIO_INPUT);
     if(err < 0) {
         LOG_ERR("Could not initialize GPIO %d: %d", REAR_DOOR_PIN, err);
         goto fail;
     }
-
-    int dip_setting = (gpio_pin_get_dt(&dip1) << 2) | (gpio_pin_get_dt(&dip2) << 1) | (gpio_pin_get_dt(&dip3) << 0); // Looking at the DIP switch with "1 2 3" going left to right = reading the number in binary
-    LOG_INF("DIP switches set to %d", dip_setting);
-
-    k_msleep(dip_setting * 5); // Delay each node's bringup differently to reduce initial clashes
+    err = gpio_pin_configure(gpio0_dr_ls, LIM_SW_UP_PIN, GPIO_INPUT);
+    if(err < 0) {
+        LOG_ERR("Could not initialize GPIO %d: %d", LIM_SW_UP_PIN, err);
+        goto fail;
+    }
+    err = gpio_pin_configure(gpio0_dr_ls, LIM_SW_LO_PIN, GPIO_INPUT);
+    if(err < 0) {
+        LOG_ERR("Could not initialize GPIO %d: %d", LIM_SW_LO_PIN, err);
+        goto fail;
+    }
 
     // Initialize CiA 303 LEDs
 	err = init_leds();
@@ -495,7 +514,7 @@ int main()
 
     // Initialize and start CANOpen
     co.can_dev = can;
-    co.node_id = 0x30 + dip_setting;
+    co.node_id = 0x30;
     LOG_INF("CANopen node ID = %d", co.node_id);
     co.bitrate = CAN_BITRATE;
     co.nmt_control = 0; // CO_NMT_STARTUP_TO_OPERATIONAL;
@@ -520,7 +539,7 @@ int main()
 
     gpio_init_callback(&front_door_gpio_cb, front_door_gpio_callback,
                        BIT(FRONT_DOOR_PIN));
-    err = gpio_add_callback(gpio0_door, &front_door_gpio_cb);
+    err = gpio_add_callback(gpio0_dr_ls, &front_door_gpio_cb);
     if (err < 0) {
         LOG_ERR("Could not add front door GPIO callback: %d", err);
         goto fail;
@@ -528,47 +547,99 @@ int main()
 
     gpio_init_callback(&rear_door_gpio_cb, rear_door_gpio_callback,
                        BIT(REAR_DOOR_PIN));
-    err = gpio_add_callback(gpio0_door, &rear_door_gpio_cb);
+    err = gpio_add_callback(gpio0_dr_ls, &rear_door_gpio_cb);
     if (err < 0) {
         LOG_ERR("Could not add rear door GPIO callback: %d", err);
         goto fail;
     }
 
-    err = gpio_pin_interrupt_configure(gpio0_door, FRONT_DOOR_PIN,
+    err = gpio_pin_interrupt_configure(gpio0_dr_ls, FRONT_DOOR_PIN,
                                        GPIO_INT_EDGE_BOTH);
     if (err < 0) {
         LOG_ERR("Could not configure front door GPIO interrupt: %d", err);
-        gpio_remove_callback(gpio0_door, &front_door_gpio_cb);
+        gpio_remove_callback(gpio0_dr_ls, &front_door_gpio_cb);
         goto fail;
     }
 
-    err = gpio_pin_interrupt_configure(gpio0_door, REAR_DOOR_PIN,
+    err = gpio_pin_interrupt_configure(gpio0_dr_ls, REAR_DOOR_PIN,
                                        GPIO_INT_EDGE_BOTH);
     if (err < 0) {
         LOG_ERR("Could not configure rear door GPIO interrupt: %d", err);
-        gpio_remove_callback(gpio0_door, &rear_door_gpio_cb);
+        gpio_remove_callback(gpio0_dr_ls, &rear_door_gpio_cb);
         goto fail;
     }
     
-    int FDvalue = gpio_pin_get(gpio0_door, FRONT_DOOR_PIN);
+    int FDvalue = gpio_pin_get(gpio0_dr_ls, FRONT_DOOR_PIN);
     if (FDvalue < 0) {
         LOG_ERR("Could not read front door GPIO: %d", FDvalue);
-        gpio_pin_interrupt_configure(gpio0_door, FRONT_DOOR_PIN,
+        gpio_pin_interrupt_configure(gpio0_dr_ls, FRONT_DOOR_PIN,
                                      GPIO_INT_DISABLE);
-        gpio_remove_callback(gpio0_door, &front_door_gpio_cb);
+        gpio_remove_callback(gpio0_dr_ls, &front_door_gpio_cb);
         goto fail;
     }
     drv_dig_inputs_set_bit(BIT(FRONT_DOOR_BIT), FDvalue != 0);
 
-    int RDvalue = gpio_pin_get(gpio0_door, REAR_DOOR_PIN);
+    int RDvalue = gpio_pin_get(gpio0_dr_ls, REAR_DOOR_PIN);
     if (RDvalue < 0) {
         LOG_ERR("Could not read rear door GPIO: %d", RDvalue);
-        gpio_pin_interrupt_configure(gpio0_door, REAR_DOOR_PIN,
+        gpio_pin_interrupt_configure(gpio0_dr_ls, REAR_DOOR_PIN,
                                      GPIO_INT_DISABLE);
-        gpio_remove_callback(gpio0_door, &rear_door_gpio_cb);
+        gpio_remove_callback(gpio0_dr_ls, &rear_door_gpio_cb);
         goto fail;
     }
     drv_dig_inputs_set_bit(BIT(REAR_DOOR_BIT), RDvalue != 0);
+
+    gpio_init_callback(&ls_up_gpio_cb, ls_up_gpio_callback,
+                       BIT(LIM_SW_UP_PIN));
+    err = gpio_add_callback(gpio0_dr_ls, &ls_up_gpio_cb);
+    if (err < 0) {
+        LOG_ERR("Could not add LS UP GPIO callback: %d", err);
+        goto fail;
+    }
+
+    gpio_init_callback(&ls_lo_gpio_cb, ls_lo_gpio_callback,
+                       BIT(LIM_SW_LO_PIN));
+    err = gpio_add_callback(gpio0_dr_ls, &ls_lo_gpio_cb);
+    if (err < 0) {
+        LOG_ERR("Could not add LS LO GPIO callback: %d", err);
+        goto fail;
+    }
+
+    err = gpio_pin_interrupt_configure(gpio0_dr_ls, LIM_SW_UP_PIN,
+                                       GPIO_INT_EDGE_FALLING);
+    if (err < 0) {
+        LOG_ERR("Could not configure LS UP GPIO interrupt: %d", err);
+        gpio_remove_callback(gpio0_dr_ls, &ls_up_gpio_cb);
+        goto fail;
+    }
+
+    err = gpio_pin_interrupt_configure(gpio0_dr_ls, LIM_SW_LO_PIN,
+                                       GPIO_INT_EDGE_FALLING);
+    if (err < 0) {
+        LOG_ERR("Could not configure LS LO GPIO interrupt: %d", err);
+        gpio_remove_callback(gpio0_dr_ls, &ls_lo_gpio_cb);
+        goto fail;
+    }
+    
+    int LSUPvalue = gpio_pin_get(gpio0_dr_ls, LIM_SW_UP_PIN);
+    if (LSUPvalue < 0) {
+        LOG_ERR("Could not read LS UP GPIO: %d", LSUPvalue);
+        gpio_pin_interrupt_configure(gpio0_dr_ls, LIM_SW_UP_PIN,
+                                     GPIO_INT_DISABLE);
+        gpio_remove_callback(gpio0_dr_ls, &ls_up_gpio_cb);
+        goto fail;
+    }
+    drv_dig_inputs_set_bit(BIT(LIM_SW_UP_BIT), LSUPvalue != 0);
+
+    int LSLOvalue = gpio_pin_get(gpio0_dr_ls, LIM_SW_LO_PIN);
+    if (LSLOvalue < 0) {
+        LOG_ERR("Could not read LS LO GPIO: %d", LSLOvalue);
+        gpio_pin_interrupt_configure(gpio0_dr_ls, LIM_SW_LO_PIN,
+                                     GPIO_INT_DISABLE);
+        gpio_remove_callback(gpio0_dr_ls, &ls_lo_gpio_cb);
+        goto fail;
+    }
+    drv_dig_inputs_set_bit(BIT(LIM_SW_LO_BIT), LSLOvalue != 0);
 
     // Main loop for housekeeping
     while(true) {
