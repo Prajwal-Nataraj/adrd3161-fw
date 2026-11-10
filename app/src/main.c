@@ -54,11 +54,21 @@ static const struct device *gpio0_dr_ls = DEVICE_DT_GET(DT_NODELABEL(gpio0));   
 #define LIM_SW_UP_BIT   3
 #define LIM_SW_LO_BIT   4
 
+/* Fault bits */
+#define DRIVE_RESET            BIT(0)
+#define SHORT_CIRCUIT          BIT(2)
+#define DRIVE_INTERNAL_ERROR   BIT(1)
+#define OVER_CURRENT           BIT(3)
+#define UNDER_VOLTAGE          BIT(4)
+#define OVER_VOLTAGE           BIT(5)
+#define OVER_TEMPERATURE       BIT(6)
+
 static struct gpio_callback front_door_gpio_cb;
 static struct gpio_callback rear_door_gpio_cb;
 static struct gpio_callback ls_up_gpio_cb;
 static struct gpio_callback ls_lo_gpio_cb;
 static struct k_spinlock drv_dig_inputs_lock;
+bool set_error_flags = false;
 
 static void drv_dig_inputs_set_bit(uint32_t mask, bool set)
 {
@@ -129,6 +139,82 @@ static void ls_lo_gpio_callback(const struct device *port,
     if (value >= 0) {
         drv_dig_inputs_set_bit(BIT(LIM_SW_LO_BIT), value != 0);
     }
+}
+
+static void adi_to_amc_faults(uint32_t gen_err_flags,
+			   uint32_t gdrv_err_flags)
+{
+	uint16_t amc_faults = 0;
+
+	/* Drive Reset */
+	if (gen_err_flags & (BIT(9)  |  /* Watchdog event */
+			     BIT(22))) /* Fault retry happened */
+	{
+		amc_faults |= DRIVE_RESET;
+	}
+
+	/* Drive Internal Error */
+	if (gen_err_flags & (BIT(1)  |  /* TMCL script error */
+			     BIT(23))) /* Fault retries failed */
+	{
+		amc_faults |= DRIVE_INTERNAL_ERROR;
+	}
+
+	/* Short Circuit
+	 * U/V only, W/Y2 excluded
+	 */
+	if (gdrv_err_flags & (
+		BIT(4)  | BIT(5)  |  /* low-side discharge short */
+		BIT(8)  | BIT(9)  |  /* low-side charge short */
+		BIT(20) | BIT(21) |  /* high-side discharge short */
+		BIT(24) | BIT(25)))  /* high-side charge short */
+	{
+		amc_faults |= SHORT_CIRCUIT;
+	}
+
+	/* Over Current
+	 * U/V only, W/Y2 excluded
+	 */
+	if ((gdrv_err_flags & (
+			BIT(0)  | BIT(1)  |   /* low-side overcurrent */
+			BIT(16) | BIT(17))) || /* high-side overcurrent */
+	    (gen_err_flags & (
+			BIT(16) |           /* I²t limit 1 exceeded */
+			BIT(17))))          /* I²t limit 2 exceeded */
+	{
+		amc_faults |= OVER_CURRENT;
+	}
+
+	/* Drive Under Voltage
+	 * U/V only, W/Y2 excluded
+	 */
+	if ((gen_err_flags & BIT(20)) || /* Supply undervoltage warning */
+	    (gdrv_err_flags & (
+			BIT(12) | BIT(13) | /* U/V bootstrap undervoltage */
+			BIT(29) |           /* Gate-driver undervoltage */
+			BIT(30) |           /* Gate-driver low voltage */
+			BIT(31))))          /* Gate-driver supply undervoltage */
+	{
+		amc_faults |= UNDER_VOLTAGE;
+	}
+
+	/* Drive Over Voltage */
+    if (gen_err_flags & (
+		BIT(19) | /* Supply overvoltage warning */
+		BIT(21))) /* ADC input overvoltage */
+	{
+		amc_faults |= OVER_VOLTAGE;
+	}
+
+	/* Drive Over Temperature */
+	if (gen_err_flags & (
+		BIT(13) | /* External temperature exceeded */
+		BIT(14))) /* Chip temperature exceeded */
+	{
+		amc_faults |= OVER_TEMPERATURE;
+	}
+
+	OD_RAM.x2200_drv_DigInputs |= (amc_faults << 16);
 }
 
 struct zms_fs fs = {
@@ -348,6 +434,14 @@ void sync_callback(struct canopen *co, bool sync) {
     if(!sync) {
         cia402_tick(&cia402, true);
         return;
+    }
+
+    int gen_error_flags, gdrv_error_flags;
+    if ((tmc9660_get_param(g_tmc9660, GENERAL_ERROR_FLAGS, &gen_error_flags) == 0) &&
+        (tmc9660_get_param(g_tmc9660, GDRV_ERROR_FLAGS, &gdrv_error_flags) == 0)) {
+        OD_APP_SHADOW.x212B_GENERAL_ERROR_FLAGS = gen_error_flags;
+        OD_APP_SHADOW.x212C_GDRV_ERROR_FLAGS = gdrv_error_flags;
+        set_error_flags = true;
     }
 
     if(cia402.state == CIA402_STATE_OPERATION_ENABLED) {
@@ -662,6 +756,12 @@ int main()
             OD_set_u16(OD_ENTRY_H2122_SUPPLY_VOLTAGE, 0, (uint16_t) supply_voltage, false);
             //CO_UNLOCK_OD(CO->CANmodule);
         }*/
+
+        if (set_error_flags) {
+            adi_to_amc_faults((uint32_t)OD_APP_SHADOW.x212B_GENERAL_ERROR_FLAGS,
+                               (uint32_t)OD_APP_SHADOW.x212C_GDRV_ERROR_FLAGS);
+            set_error_flags = false;
+        }
 
         k_msleep(1);
     }
