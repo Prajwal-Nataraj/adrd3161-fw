@@ -181,6 +181,7 @@ SupportedObjects=55
 53=0x60FF
 54=0x6502
 55=0x67FF
+56=0x6800
 
 [1003]
 ParameterName=Pre-defined error field
@@ -2166,6 +2167,15 @@ ObjectType=0x7
 DataType=0x0007
 AccessType=ro
 DefaultValue=0x00020192
+PDOMapping=0
+
+[6800]
+ParameterName=Machine type
+ObjectType=0x7
+;StorageLocation=RAM
+DataType=0x0005
+AccessType=rw
+DefaultValue=0x00
 PDOMapping=0
 
 [ManufacturerObjects]

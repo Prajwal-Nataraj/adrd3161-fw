@@ -63,6 +63,10 @@ static const struct device *gpio0_dr_ls = DEVICE_DT_GET(DT_NODELABEL(gpio0));   
 #define OVER_VOLTAGE           BIT(5)
 #define OVER_TEMPERATURE       BIT(6)
 
+/* Machine type */
+#define LS1     (0x01)
+#define LS5     (0x02)
+
 static struct gpio_callback front_door_gpio_cb;
 static struct gpio_callback rear_door_gpio_cb;
 static struct gpio_callback ls_up_gpio_cb;
@@ -523,9 +527,116 @@ static void can_debug_state() {
     prev_state = state;
 }
 
+/*
+ * Apply INI parameters based on machine type
+ * mType: machine type identifier
+ */
+void configureMachine(uint8_t mType)
+{
+    OD_PERSIST_TMC.x2000_MOTOR_TYPE = 1;
+    OD_PERSIST_TMC.x2002_MOTOR_DIRECTION = 2;
+    OD_PERSIST_TMC.x2005_OUTPUT_VOLTAGE_LIMIT = 32767;
+    OD_PERSIST_TMC.x2015_CURRENT_SCALING_FACTOR = 390;
+    OD_PERSIST_TMC.x201F_ADC_I1_INVERTED = 0;
+    OD_PERSIST_TMC.x2020_ADC_I2_INVERTED = 0;
+    OD_PERSIST_TMC.x2034_RAMP_ENABLE = 1;
+    OD_PERSIST_TMC.x2036_RAMP_AMAX = 4000;
+    OD_PERSIST_TMC.x2037_RAMP_A1 = 2000;
+    OD_PERSIST_TMC.x2039_RAMP_DMAX = 6000;
+    OD_PERSIST_TMC.x203B_RAMP_D2 = 4000;
+    OD_PERSIST_TMC.x203D_RAMP_V1 = 32000;
+    OD_PERSIST_TMC.x203E_RAMP_V2 = 64000;
+    OD_PERSIST_TMC.x205A_ABN_1_STEPS = 20000;
+    OD_PERSIST_TMC.x207B_VELOCITY_SENSOR_SELECTION = 2;
+    OD_PERSIST_TMC.x207F_VELOCITY_P = 50;
+    OD_PERSIST_TMC.x2081_VELOCITY_NORM_P = 0;
+    OD_PERSIST_TMC.x2082_VELOCITY_NORM_I = 0;
+    OD_PERSIST_TMC.x2087_VELOCITY_LOOP_DOWNSAMPLING = 0;
+    OD_PERSIST_TMC.x2089_VELOCITY_METER_SWITCH_THRESHOLD = 0;
+    OD_PERSIST_TMC.x208E_POSITION_SENSOR_SELECTION = 2;
+    OD_PERSIST_TMC.x20A1_REFERENCE_SWITCH_ENABLE = 3;
+    OD_PERSIST_TMC.x20A4_EVENT_STOP_SETTINGS = 1;
+    OD_PERSIST_TMC.x20AE_ABN_2_STEPS = 0;
+    OD_PERSIST_TMC.x20B0_ABN_2_GEAR_RATIO = 0;
+    OD_PERSIST_TMC.x20B7_SPI_ENCODER_MAIN_TRANSFER_CMD_SIZE = 0;
+    OD_PERSIST_TMC.x20B9_SPI_ENCODER_TRANSFER_DATA_3_0 = 0;
+    OD_PERSIST_TMC.x20BA_SPI_ENCODER_TRANSFER_DATA_7_4 = 0;
+    OD_PERSIST_TMC.x20BB_SPI_ENCODER_TRANSFER_DATA_11_8 = 0;
+    OD_PERSIST_TMC.x20BC_SPI_ENCODER_TRANSFER_DATA_15_12 = 0;
+    OD_PERSIST_TMC.x20BE_SPI_ENCODER_POSITION_COUNTER_MASK = 0;
+    OD_PERSIST_TMC.x20C4_SPI_ENCODER_OFFSET = 0;
+    OD_PERSIST_TMC.x20D4_BRAKE_CHOPPER_ENABLE = 1;
+    OD_PERSIST_TMC.x20D5_BRAKE_CHOPPER_VOLTAGE_LIMIT = 495;
+    OD_PERSIST_TMC.x20DD_INVERT_BRAKE_OUTPUT = 1;
+    OD_PERSIST_TMC.x20F1_DRIVE_TIME_SINK_UVW = 40;
+    OD_PERSIST_TMC.x20F2_DRIVE_TIME_SOURCE_UVW = 40;
+    OD_PERSIST_TMC.x20F3_DRIVE_TIME_SINK_Y2 = 40;
+    OD_PERSIST_TMC.x20F4_DRIVE_TIME_SOURCE_Y2 = 40;
+    OD_PERSIST_TMC.x20F5_UVW_SINK_CURRENT = 10;
+    OD_PERSIST_TMC.x20F6_UVW_SOURCE_CURRENT = 5;
+    OD_PERSIST_TMC.x20F7_Y2_SINK_CURRENT = 10;
+    OD_PERSIST_TMC.x20F8_Y2_SOURCE_CURRENT = 5;
+    OD_PERSIST_TMC.x2102_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_THRESHOLD = 1;
+    OD_PERSIST_TMC.x2103_OVERCURRENT_PROTECTION_UVW_HIGH_SIDE_THRESHOLD = 2;
+    OD_PERSIST_TMC.x2104_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_THRESHOLD = 1;
+    OD_PERSIST_TMC.x2105_OVERCURRENT_PROTECTION_Y2_HIGH_SIDE_THRESHOLD = 4;
+    OD_PERSIST_TMC.x210E_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_USE_VDS = 0;
+    OD_PERSIST_TMC.x210F_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_USE_VDS = 0;
+    OD_PERSIST_TMC.x2123_SUPPLY_OVERVOLTAGE_WARNING_THRESHOLD = 710;
+    OD_PERSIST_TMC.x2124_SUPPLY_UNDERVOLTAGE_WARNING_THRESHOLD = 78;
+    OD_PERSIST_TMC.x213E_TARGET_TORQUE_BIQUAD_FILTER_ENABLE = 1;
+
+    if(mType == LS1) {
+        
+        OD_PERSIST_TMC.x2006_MAX_TORQUE = 10000;
+        OD_PERSIST_TMC.x2007_MAX_FLUX = 1690;
+        OD_PERSIST_TMC.x2022_ADC_I0_OFFSET = -14;
+        OD_PERSIST_TMC.x2023_ADC_I1_OFFSET = 8;
+        OD_PERSIST_TMC.x2025_ADC_I3_OFFSET = 7;
+        OD_PERSIST_TMC.x202E_OPENLOOP_CURRENT = 3000;
+        OD_PERSIST_TMC.x206D_TORQUE_P = 500;
+        OD_PERSIST_TMC.x206E_TORQUE_I = 300;
+        OD_PERSIST_TMC.x206F_FLUX_P = 500;
+        OD_PERSIST_TMC.x2070_FLUX_I = 300;
+        OD_PERSIST_TMC.x2080_VELOCITY_I = 120;
+        OD_PERSIST_TMC.x20E1_IIT_LIMIT_1 = 75000;
+        OD_PERSIST_TMC.x20E4_IIT_LIMIT_2 = 150000;
+
+        // Write persisted params to TMC and set up extensions for intercepting reads and writes
+        tmc_params_init();
+        LOG_INF("Initialization OK!");
+    }
+    else if(mType == LS5)
+    {
+        OD_PERSIST_TMC.x2006_MAX_TORQUE = 12000;
+        OD_PERSIST_TMC.x2007_MAX_FLUX = 947;
+        OD_PERSIST_TMC.x2022_ADC_I0_OFFSET = -3;
+        OD_PERSIST_TMC.x2023_ADC_I1_OFFSET = 9;
+        OD_PERSIST_TMC.x2024_ADC_I2_OFFSET = -4;
+        OD_PERSIST_TMC.x2025_ADC_I3_OFFSET = 21;
+        OD_PERSIST_TMC.x202E_OPENLOOP_CURRENT = 5000;
+        OD_PERSIST_TMC.x206D_TORQUE_P = 1000;
+        OD_PERSIST_TMC.x206E_TORQUE_I = 4000;
+        OD_PERSIST_TMC.x206F_FLUX_P = 1000;
+        OD_PERSIST_TMC.x2070_FLUX_I = 4000;
+        OD_PERSIST_TMC.x2080_VELOCITY_I = 200;
+        OD_PERSIST_TMC.x20E1_IIT_LIMIT_1 = -1;
+        OD_PERSIST_TMC.x20E4_IIT_LIMIT_2 = -1;
+        
+        // Write persisted params to TMC and set up extensions for intercepting reads and writes
+        tmc_params_init();
+        LOG_INF("Initialization OK!");
+    }
+
+    else {
+        LOG_ERR("Machine configuration failed");
+    }
+}
+
 int main()
 {
-    int err;
+    int err = -1;
+    bool machineConfigured = false;
 
     LOG_INF("Firmware git revision %s", OD_PERSIST_COMM.x100A_manufacturerSoftwareVersion);
     LOG_INF("Serial number %d", OD_PERSIST_COMM.x1018_identity.serialNumber);
@@ -625,11 +736,6 @@ int main()
         LOG_ERR("CANopenNode init failed");
         goto fail;
     }
-
-    // Write persisted params to TMC and set up extensions for intercepting reads and writes
-    tmc_params_init();
-    
-    LOG_INF("Initialization OK!");
 
     gpio_init_callback(&front_door_gpio_cb, front_door_gpio_callback,
                        BIT(FRONT_DOOR_PIN));
@@ -761,6 +867,11 @@ int main()
             adi_to_amc_faults((uint32_t)OD_APP_SHADOW.x212B_GENERAL_ERROR_FLAGS,
                                (uint32_t)OD_APP_SHADOW.x212C_GDRV_ERROR_FLAGS);
             set_error_flags = false;
+        }
+
+        if ((0x00 != OD_RAM.x6800_machineType) && (false == machineConfigured)) {
+            configureMachine(OD_RAM.x6800_machineType);
+            machineConfigured = true;
         }
 
         k_msleep(1);

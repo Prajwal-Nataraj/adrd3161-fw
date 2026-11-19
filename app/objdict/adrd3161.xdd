@@ -5997,6 +5997,13 @@ Min: 0; Max: 4294967295; Default: 0
             <UDINT />
             <q1:defaultValue value="0x00020192" />
           </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6800" access="readWrite">
+            <description lang="en">* 0x00: Default
+* 0x01: LS1+
+* 0x02: LS5+</description>
+            <USINT />
+            <q1:defaultValue value="0x00" />
+          </q1:parameter>
         </q1:parameterList>
       </q1:ApplicationProcess>
     </ProfileBody>

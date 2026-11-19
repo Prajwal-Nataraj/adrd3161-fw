@@ -301,6 +301,7 @@ typedef struct {
     int32_t x60FF_targetVelocity;
     uint32_t x6502_supportedDriveModes;
     uint32_t x67FF_singleDeviceType;
+    uint8_t x6800_machineType;
 } OD_RAM_t;
 
 typedef struct {
@@ -976,6 +977,7 @@ extern OD_ATTR_OD OD_t *OD;
 #define OD_ENTRY_H60FF &OD->list[345]
 #define OD_ENTRY_H6502 &OD->list[346]
 #define OD_ENTRY_H67FF &OD->list[347]
+#define OD_ENTRY_H6800 &OD->list[348]
 
 
 /*******************************************************************************
@@ -1329,6 +1331,7 @@ extern OD_ATTR_OD OD_t *OD;
 #define OD_ENTRY_H60FF_targetVelocity &OD->list[345]
 #define OD_ENTRY_H6502_supportedDriveModes &OD->list[346]
 #define OD_ENTRY_H67FF_singleDeviceType &OD->list[347]
+#define OD_ENTRY_H6800_machineType &OD->list[348]
 
 
 /*******************************************************************************
