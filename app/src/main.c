@@ -49,10 +49,10 @@ static const struct device *gpio0_dr_ls = DEVICE_DT_GET(DT_NODELABEL(gpio0));   
 #define FRONT_DOOR_BIT  2
 #define REAR_DOOR_BIT   1
 
-#define LIM_SW_UP_PIN   18
-#define LIM_SW_LO_PIN   19
-#define LIM_SW_UP_BIT   3
-#define LIM_SW_LO_BIT   4
+#define LIM_SW_UP_PIN   19
+#define LIM_SW_LO_PIN   18
+#define LIM_SW_UP_BIT   4       /* Originally, according to system module, LIM_SW_UP_BIT should be 3 and LIM_SW_LO_BIT should be 4 */
+#define LIM_SW_LO_BIT   3       /* But in order to match the AMC hardware configuration, the bits are swapped */
 
 /* Fault bits */
 #define DRIVE_RESET            BIT(0)
