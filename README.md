@@ -57,6 +57,7 @@ Application implementation:
         - `cia402_impl.h`: Interface between CiA 402 and application: "how do I spin a motor?"
         - `tmc9660.c/h`: TMC9660 parameter mode SPI driver
         - `tmc9660_params.c/h`: Logic for saving/loading TMC9660 parameters through the OD and UART shell
+        - `lloyd_machine.c/h`: Configurations related to LLoyd machines
         - `main.c`
     - `objdict`: CANOpenNode object dictionary, EDS, XDD
     - `prj.conf`: Additional kconfig settings

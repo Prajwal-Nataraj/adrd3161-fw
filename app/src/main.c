@@ -22,6 +22,7 @@
 #include "tmc9660_params.h"
 
 #include "bodge.h"
+#include "lloyd_machine.h"
 
 LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);
 
@@ -35,6 +36,7 @@ static const struct device *can = DEVICE_DT_GET(DT_CHOSEN(zephyr_canbus));
 						     CONFIG_CAN_DEFAULT_BITRATE)) / 1000)
 
 const struct device *g_tmc9660 = DEVICE_DT_GET(DT_NODELABEL(tmc9660));
+static const struct device *g_lloyd = DEVICE_DT_GET(DT_NODELABEL(gpio0));       /* For Safety Door and Limit Switch inputs */
 struct canopen co;
 struct cia402 cia402;
 
@@ -42,184 +44,8 @@ struct cia402 cia402;
 #define PARTITION_DEVICE FIXED_PARTITION_DEVICE(PARTITION)
 #define PARTITION_OFFSET FIXED_PARTITION_OFFSET(PARTITION)
 
-/* Safety Doors, Faults and Limit Switches */
-static const struct device *gpio0_dr_ls = DEVICE_DT_GET(DT_NODELABEL(gpio0));       /* dr: Door, ls: Limit Switch */
-#define FRONT_DOOR_PIN  7
-#define REAR_DOOR_PIN   8
-#define FRONT_DOOR_BIT  2
-#define REAR_DOOR_BIT   1
-
-#define LIM_SW_UP_PIN   19
-#define LIM_SW_LO_PIN   18
-#define LIM_SW_UP_BIT   4       /* Originally, according to system module, LIM_SW_UP_BIT should be 3 and LIM_SW_LO_BIT should be 4 */
-#define LIM_SW_LO_BIT   3       /* But in order to match the AMC hardware configuration, the bits are swapped */
-
-/* Fault bits */
-#define DRIVE_RESET            BIT(0)
-#define SHORT_CIRCUIT          BIT(2)
-#define DRIVE_INTERNAL_ERROR   BIT(1)
-#define OVER_CURRENT           BIT(3)
-#define UNDER_VOLTAGE          BIT(4)
-#define OVER_VOLTAGE           BIT(5)
-#define OVER_TEMPERATURE       BIT(6)
-
-/* Machine type */
-#define LS1     (0x01)
-#define LS5     (0x02)
-
-static struct gpio_callback front_door_gpio_cb;
-static struct gpio_callback rear_door_gpio_cb;
-static struct gpio_callback ls_up_gpio_cb;
-static struct gpio_callback ls_lo_gpio_cb;
-static struct k_spinlock drv_dig_inputs_lock;
+static Lloyd_Int_CB_Struct lloyd_int_cb;
 bool set_error_flags = false;
-
-static void drv_dig_inputs_set_bit(uint32_t mask, bool set)
-{
-    k_spinlock_key_t key = k_spin_lock(&drv_dig_inputs_lock);
-    uint32_t inputs = OD_RAM.x2200_drv_DigInputs;
-
-    if (set) {
-        inputs |= mask;
-    } else {
-        inputs &= ~mask;
-    }
-
-    OD_RAM.x2200_drv_DigInputs = inputs;
-    k_spin_unlock(&drv_dig_inputs_lock, key);
-}
-
-static void front_door_gpio_callback(const struct device *port,
-                                     struct gpio_callback *cb,
-                                     gpio_port_pins_t pins)
-{
-    if ((pins & BIT(FRONT_DOOR_PIN)) == 0U) {
-        return;
-    }
-
-    int value = gpio_pin_get(port, FRONT_DOOR_PIN);
-    if (value >= 0) {
-        drv_dig_inputs_set_bit(BIT(FRONT_DOOR_BIT), value != 0);
-    }
-}
-
-static void rear_door_gpio_callback(const struct device *port,
-                                    struct gpio_callback *cb,
-                                    gpio_port_pins_t pins)
-{
-    if ((pins & BIT(REAR_DOOR_PIN)) == 0U) {
-        return;
-    }
-
-    int value = gpio_pin_get(port, REAR_DOOR_PIN);
-    if (value >= 0) {
-        drv_dig_inputs_set_bit(BIT(REAR_DOOR_BIT), value != 0);
-    }
-}
-
-static void ls_up_gpio_callback(const struct device *port,
-                                    struct gpio_callback *cb,
-                                    gpio_port_pins_t pins)
-{
-    if ((pins & BIT(LIM_SW_UP_PIN)) == 0U) {
-        return;
-    }
-
-    int value = gpio_pin_get(port, LIM_SW_UP_PIN);
-    if (value >= 0) {
-        drv_dig_inputs_set_bit(BIT(LIM_SW_UP_BIT), value != 0);
-    }
-}
-
-static void ls_lo_gpio_callback(const struct device *port,
-                                     struct gpio_callback *cb,
-                                     gpio_port_pins_t pins)
-{
-    if ((pins & BIT(LIM_SW_LO_PIN)) == 0U) {
-        return;
-    }
-
-    int value = gpio_pin_get(port, LIM_SW_LO_PIN);
-    if (value >= 0) {
-        drv_dig_inputs_set_bit(BIT(LIM_SW_LO_BIT), value != 0);
-    }
-}
-
-static void adi_to_amc_faults(uint32_t gen_err_flags,
-			   uint32_t gdrv_err_flags)
-{
-	uint16_t amc_faults = 0;
-
-	/* Drive Reset */
-	if (gen_err_flags & (BIT(9)  |  /* Watchdog event */
-			     BIT(22))) /* Fault retry happened */
-	{
-		amc_faults |= DRIVE_RESET;
-	}
-
-	/* Drive Internal Error */
-	if (gen_err_flags & (BIT(1)  |  /* TMCL script error */
-			     BIT(23))) /* Fault retries failed */
-	{
-		amc_faults |= DRIVE_INTERNAL_ERROR;
-	}
-
-	/* Short Circuit
-	 * U/V only, W/Y2 excluded
-	 */
-	if (gdrv_err_flags & (
-		BIT(4)  | BIT(5)  |  /* low-side discharge short */
-		BIT(8)  | BIT(9)  |  /* low-side charge short */
-		BIT(20) | BIT(21) |  /* high-side discharge short */
-		BIT(24) | BIT(25)))  /* high-side charge short */
-	{
-		amc_faults |= SHORT_CIRCUIT;
-	}
-
-	/* Over Current
-	 * U/V only, W/Y2 excluded
-	 */
-	if ((gdrv_err_flags & (
-			BIT(0)  | BIT(1)  |   /* low-side overcurrent */
-			BIT(16) | BIT(17))) || /* high-side overcurrent */
-	    (gen_err_flags & (
-			BIT(16) |           /* I²t limit 1 exceeded */
-			BIT(17))))          /* I²t limit 2 exceeded */
-	{
-		amc_faults |= OVER_CURRENT;
-	}
-
-	/* Drive Under Voltage
-	 * U/V only, W/Y2 excluded
-	 */
-	if ((gen_err_flags & BIT(20)) || /* Supply undervoltage warning */
-	    (gdrv_err_flags & (
-			BIT(12) | BIT(13) | /* U/V bootstrap undervoltage */
-			BIT(29) |           /* Gate-driver undervoltage */
-			BIT(30) |           /* Gate-driver low voltage */
-			BIT(31))))          /* Gate-driver supply undervoltage */
-	{
-		amc_faults |= UNDER_VOLTAGE;
-	}
-
-	/* Drive Over Voltage */
-    if (gen_err_flags & (
-		BIT(19) | /* Supply overvoltage warning */
-		BIT(21))) /* ADC input overvoltage */
-	{
-		amc_faults |= OVER_VOLTAGE;
-	}
-
-	/* Drive Over Temperature */
-	if (gen_err_flags & (
-		BIT(13) | /* External temperature exceeded */
-		BIT(14))) /* Chip temperature exceeded */
-	{
-		amc_faults |= OVER_TEMPERATURE;
-	}
-
-	OD_RAM.x2200_drv_DigInputs |= (amc_faults << 16);
-}
 
 struct zms_fs fs = {
     .offset = PARTITION_OFFSET,
@@ -440,13 +266,13 @@ void sync_callback(struct canopen *co, bool sync) {
         return;
     }
 
+    // Read error flags from the drive
     int gen_error_flags, gdrv_error_flags;
-    if ((tmc9660_get_param(g_tmc9660, GENERAL_ERROR_FLAGS, &gen_error_flags) == 0) &&
-        (tmc9660_get_param(g_tmc9660, GDRV_ERROR_FLAGS, &gdrv_error_flags) == 0)) {
-        OD_APP_SHADOW.x212B_GENERAL_ERROR_FLAGS = gen_error_flags;
-        OD_APP_SHADOW.x212C_GDRV_ERROR_FLAGS = gdrv_error_flags;
-        set_error_flags = true;
-    }
+    tmc9660_get_param(g_tmc9660, GENERAL_ERROR_FLAGS, &gen_error_flags);
+    tmc9660_get_param(g_tmc9660, GDRV_ERROR_FLAGS, &gdrv_error_flags);
+    OD_APP_SHADOW.x212B_GENERAL_ERROR_FLAGS = gen_error_flags;
+    OD_APP_SHADOW.x212C_GDRV_ERROR_FLAGS = gdrv_error_flags;
+    set_error_flags = true;
 
     if(cia402.state == CIA402_STATE_OPERATION_ENABLED) {
         enum cia402_mode_of_operation mode = OD_RAM.x6061_modesOfOperationDisplay;
@@ -527,112 +353,6 @@ static void can_debug_state() {
     prev_state = state;
 }
 
-/*
- * Apply INI parameters based on machine type
- * mType: machine type identifier
- */
-void configureMachine(uint8_t mType)
-{
-    OD_PERSIST_TMC.x2000_MOTOR_TYPE = 1;
-    OD_PERSIST_TMC.x2002_MOTOR_DIRECTION = 2;
-    OD_PERSIST_TMC.x2005_OUTPUT_VOLTAGE_LIMIT = 32767;
-    OD_PERSIST_TMC.x2015_CURRENT_SCALING_FACTOR = 390;
-    OD_PERSIST_TMC.x201F_ADC_I1_INVERTED = 0;
-    OD_PERSIST_TMC.x2020_ADC_I2_INVERTED = 0;
-    OD_PERSIST_TMC.x2034_RAMP_ENABLE = 1;
-    OD_PERSIST_TMC.x2036_RAMP_AMAX = 4000;
-    OD_PERSIST_TMC.x2037_RAMP_A1 = 2000;
-    OD_PERSIST_TMC.x2039_RAMP_DMAX = 6000;
-    OD_PERSIST_TMC.x203B_RAMP_D2 = 4000;
-    OD_PERSIST_TMC.x203D_RAMP_V1 = 32000;
-    OD_PERSIST_TMC.x203E_RAMP_V2 = 64000;
-    OD_PERSIST_TMC.x205A_ABN_1_STEPS = 20000;
-    OD_PERSIST_TMC.x207B_VELOCITY_SENSOR_SELECTION = 2;
-    OD_PERSIST_TMC.x207F_VELOCITY_P = 50;
-    OD_PERSIST_TMC.x2081_VELOCITY_NORM_P = 0;
-    OD_PERSIST_TMC.x2082_VELOCITY_NORM_I = 0;
-    OD_PERSIST_TMC.x2087_VELOCITY_LOOP_DOWNSAMPLING = 0;
-    OD_PERSIST_TMC.x2089_VELOCITY_METER_SWITCH_THRESHOLD = 0;
-    OD_PERSIST_TMC.x208E_POSITION_SENSOR_SELECTION = 2;
-    OD_PERSIST_TMC.x20A1_REFERENCE_SWITCH_ENABLE = 3;
-    OD_PERSIST_TMC.x20A4_EVENT_STOP_SETTINGS = 1;
-    OD_PERSIST_TMC.x20AE_ABN_2_STEPS = 0;
-    OD_PERSIST_TMC.x20B0_ABN_2_GEAR_RATIO = 0;
-    OD_PERSIST_TMC.x20B7_SPI_ENCODER_MAIN_TRANSFER_CMD_SIZE = 0;
-    OD_PERSIST_TMC.x20B9_SPI_ENCODER_TRANSFER_DATA_3_0 = 0;
-    OD_PERSIST_TMC.x20BA_SPI_ENCODER_TRANSFER_DATA_7_4 = 0;
-    OD_PERSIST_TMC.x20BB_SPI_ENCODER_TRANSFER_DATA_11_8 = 0;
-    OD_PERSIST_TMC.x20BC_SPI_ENCODER_TRANSFER_DATA_15_12 = 0;
-    OD_PERSIST_TMC.x20BE_SPI_ENCODER_POSITION_COUNTER_MASK = 0;
-    OD_PERSIST_TMC.x20C4_SPI_ENCODER_OFFSET = 0;
-    OD_PERSIST_TMC.x20D4_BRAKE_CHOPPER_ENABLE = 1;
-    OD_PERSIST_TMC.x20D5_BRAKE_CHOPPER_VOLTAGE_LIMIT = 495;
-    OD_PERSIST_TMC.x20DD_INVERT_BRAKE_OUTPUT = 1;
-    OD_PERSIST_TMC.x20F1_DRIVE_TIME_SINK_UVW = 40;
-    OD_PERSIST_TMC.x20F2_DRIVE_TIME_SOURCE_UVW = 40;
-    OD_PERSIST_TMC.x20F3_DRIVE_TIME_SINK_Y2 = 40;
-    OD_PERSIST_TMC.x20F4_DRIVE_TIME_SOURCE_Y2 = 40;
-    OD_PERSIST_TMC.x20F5_UVW_SINK_CURRENT = 10;
-    OD_PERSIST_TMC.x20F6_UVW_SOURCE_CURRENT = 5;
-    OD_PERSIST_TMC.x20F7_Y2_SINK_CURRENT = 10;
-    OD_PERSIST_TMC.x20F8_Y2_SOURCE_CURRENT = 5;
-    OD_PERSIST_TMC.x2102_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_THRESHOLD = 1;
-    OD_PERSIST_TMC.x2103_OVERCURRENT_PROTECTION_UVW_HIGH_SIDE_THRESHOLD = 2;
-    OD_PERSIST_TMC.x2104_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_THRESHOLD = 1;
-    OD_PERSIST_TMC.x2105_OVERCURRENT_PROTECTION_Y2_HIGH_SIDE_THRESHOLD = 4;
-    OD_PERSIST_TMC.x210E_OVERCURRENT_PROTECTION_UVW_LOW_SIDE_USE_VDS = 0;
-    OD_PERSIST_TMC.x210F_OVERCURRENT_PROTECTION_Y2_LOW_SIDE_USE_VDS = 0;
-    OD_PERSIST_TMC.x2123_SUPPLY_OVERVOLTAGE_WARNING_THRESHOLD = 710;
-    OD_PERSIST_TMC.x2124_SUPPLY_UNDERVOLTAGE_WARNING_THRESHOLD = 78;
-    OD_PERSIST_TMC.x213E_TARGET_TORQUE_BIQUAD_FILTER_ENABLE = 1;
-
-    if(mType == LS1) {
-        
-        OD_PERSIST_TMC.x2006_MAX_TORQUE = 10000;
-        OD_PERSIST_TMC.x2007_MAX_FLUX = 1690;
-        OD_PERSIST_TMC.x2022_ADC_I0_OFFSET = -14;
-        OD_PERSIST_TMC.x2023_ADC_I1_OFFSET = 8;
-        OD_PERSIST_TMC.x2025_ADC_I3_OFFSET = 7;
-        OD_PERSIST_TMC.x202E_OPENLOOP_CURRENT = 3000;
-        OD_PERSIST_TMC.x206D_TORQUE_P = 500;
-        OD_PERSIST_TMC.x206E_TORQUE_I = 300;
-        OD_PERSIST_TMC.x206F_FLUX_P = 500;
-        OD_PERSIST_TMC.x2070_FLUX_I = 300;
-        OD_PERSIST_TMC.x2080_VELOCITY_I = 120;
-        OD_PERSIST_TMC.x20E1_IIT_LIMIT_1 = 75000;
-        OD_PERSIST_TMC.x20E4_IIT_LIMIT_2 = 150000;
-
-        // Write persisted params to TMC and set up extensions for intercepting reads and writes
-        tmc_params_init();
-        LOG_INF("Initialization OK!");
-    }
-    else if(mType == LS5)
-    {
-        OD_PERSIST_TMC.x2006_MAX_TORQUE = 12000;
-        OD_PERSIST_TMC.x2007_MAX_FLUX = 947;
-        OD_PERSIST_TMC.x2022_ADC_I0_OFFSET = -3;
-        OD_PERSIST_TMC.x2023_ADC_I1_OFFSET = 9;
-        OD_PERSIST_TMC.x2024_ADC_I2_OFFSET = -4;
-        OD_PERSIST_TMC.x2025_ADC_I3_OFFSET = 21;
-        OD_PERSIST_TMC.x202E_OPENLOOP_CURRENT = 5000;
-        OD_PERSIST_TMC.x206D_TORQUE_P = 1000;
-        OD_PERSIST_TMC.x206E_TORQUE_I = 4000;
-        OD_PERSIST_TMC.x206F_FLUX_P = 1000;
-        OD_PERSIST_TMC.x2070_FLUX_I = 4000;
-        OD_PERSIST_TMC.x2080_VELOCITY_I = 200;
-        OD_PERSIST_TMC.x20E1_IIT_LIMIT_1 = -1;
-        OD_PERSIST_TMC.x20E4_IIT_LIMIT_2 = -1;
-        
-        // Write persisted params to TMC and set up extensions for intercepting reads and writes
-        tmc_params_init();
-        LOG_INF("Initialization OK!");
-    }
-
-    else {
-        LOG_ERR("Machine configuration failed");
-    }
-}
-
 int main()
 {
     int err = -1;
@@ -660,28 +380,24 @@ int main()
     k_msleep(100);
     tmc9660_set_gpio(g_tmc9660, 16, 0);
 
-    if (!device_is_ready(gpio0_dr_ls)) {
-        LOG_ERR("GPIO0 device not ready");
+    // Initialize and configure GPIO inputs and interrupts for safety doors and limit switches
+    if (!device_is_ready(g_lloyd)) {
+        LOG_ERR("Safety Door and Limit Switch interrupt init failed");
         goto fail;
     }
-    err = gpio_pin_configure(gpio0_dr_ls, FRONT_DOOR_PIN, GPIO_INPUT);
+    err = conf_LloydGPIOInputs(g_lloyd);
     if(err < 0) {
-        LOG_ERR("Could not initialize GPIO %d: %d", FRONT_DOOR_PIN, err);
+        LOG_ERR("Lloyd GPIO input configuration failed");
         goto fail;
     }
-    err = gpio_pin_configure(gpio0_dr_ls, REAR_DOOR_PIN, GPIO_INPUT);
-    if(err < 0) {
-        LOG_ERR("Could not initialize GPIO %d: %d", REAR_DOOR_PIN, err);
+    err = conf_LloydIntCallbacks(g_lloyd, &lloyd_int_cb);
+    if (err < 0) {
+        LOG_ERR("Failed to configure Lloyd GPIO Interrupts: %d", err);
         goto fail;
     }
-    err = gpio_pin_configure(gpio0_dr_ls, LIM_SW_UP_PIN, GPIO_INPUT);
-    if(err < 0) {
-        LOG_ERR("Could not initialize GPIO %d: %d", LIM_SW_UP_PIN, err);
-        goto fail;
-    }
-    err = gpio_pin_configure(gpio0_dr_ls, LIM_SW_LO_PIN, GPIO_INPUT);
-    if(err < 0) {
-        LOG_ERR("Could not initialize GPIO %d: %d", LIM_SW_LO_PIN, err);
+    err = conf_LloydInterrupts(g_lloyd, &lloyd_int_cb);
+    if (err < 0) {
+        LOG_ERR("Failed to configure Lloyd GPIO Interrupts: %d", err);
         goto fail;
     }
 
@@ -737,110 +453,6 @@ int main()
         goto fail;
     }
 
-    gpio_init_callback(&front_door_gpio_cb, front_door_gpio_callback,
-                       BIT(FRONT_DOOR_PIN));
-    err = gpio_add_callback(gpio0_dr_ls, &front_door_gpio_cb);
-    if (err < 0) {
-        LOG_ERR("Could not add front door GPIO callback: %d", err);
-        goto fail;
-    }
-
-    gpio_init_callback(&rear_door_gpio_cb, rear_door_gpio_callback,
-                       BIT(REAR_DOOR_PIN));
-    err = gpio_add_callback(gpio0_dr_ls, &rear_door_gpio_cb);
-    if (err < 0) {
-        LOG_ERR("Could not add rear door GPIO callback: %d", err);
-        goto fail;
-    }
-
-    err = gpio_pin_interrupt_configure(gpio0_dr_ls, FRONT_DOOR_PIN,
-                                       GPIO_INT_EDGE_BOTH);
-    if (err < 0) {
-        LOG_ERR("Could not configure front door GPIO interrupt: %d", err);
-        gpio_remove_callback(gpio0_dr_ls, &front_door_gpio_cb);
-        goto fail;
-    }
-
-    err = gpio_pin_interrupt_configure(gpio0_dr_ls, REAR_DOOR_PIN,
-                                       GPIO_INT_EDGE_BOTH);
-    if (err < 0) {
-        LOG_ERR("Could not configure rear door GPIO interrupt: %d", err);
-        gpio_remove_callback(gpio0_dr_ls, &rear_door_gpio_cb);
-        goto fail;
-    }
-    
-    int FDvalue = gpio_pin_get(gpio0_dr_ls, FRONT_DOOR_PIN);
-    if (FDvalue < 0) {
-        LOG_ERR("Could not read front door GPIO: %d", FDvalue);
-        gpio_pin_interrupt_configure(gpio0_dr_ls, FRONT_DOOR_PIN,
-                                     GPIO_INT_DISABLE);
-        gpio_remove_callback(gpio0_dr_ls, &front_door_gpio_cb);
-        goto fail;
-    }
-    drv_dig_inputs_set_bit(BIT(FRONT_DOOR_BIT), FDvalue != 0);
-
-    int RDvalue = gpio_pin_get(gpio0_dr_ls, REAR_DOOR_PIN);
-    if (RDvalue < 0) {
-        LOG_ERR("Could not read rear door GPIO: %d", RDvalue);
-        gpio_pin_interrupt_configure(gpio0_dr_ls, REAR_DOOR_PIN,
-                                     GPIO_INT_DISABLE);
-        gpio_remove_callback(gpio0_dr_ls, &rear_door_gpio_cb);
-        goto fail;
-    }
-    drv_dig_inputs_set_bit(BIT(REAR_DOOR_BIT), RDvalue != 0);
-
-    gpio_init_callback(&ls_up_gpio_cb, ls_up_gpio_callback,
-                       BIT(LIM_SW_UP_PIN));
-    err = gpio_add_callback(gpio0_dr_ls, &ls_up_gpio_cb);
-    if (err < 0) {
-        LOG_ERR("Could not add LS UP GPIO callback: %d", err);
-        goto fail;
-    }
-
-    gpio_init_callback(&ls_lo_gpio_cb, ls_lo_gpio_callback,
-                       BIT(LIM_SW_LO_PIN));
-    err = gpio_add_callback(gpio0_dr_ls, &ls_lo_gpio_cb);
-    if (err < 0) {
-        LOG_ERR("Could not add LS LO GPIO callback: %d", err);
-        goto fail;
-    }
-
-    err = gpio_pin_interrupt_configure(gpio0_dr_ls, LIM_SW_UP_PIN,
-                                       GPIO_INT_EDGE_FALLING);
-    if (err < 0) {
-        LOG_ERR("Could not configure LS UP GPIO interrupt: %d", err);
-        gpio_remove_callback(gpio0_dr_ls, &ls_up_gpio_cb);
-        goto fail;
-    }
-
-    err = gpio_pin_interrupt_configure(gpio0_dr_ls, LIM_SW_LO_PIN,
-                                       GPIO_INT_EDGE_FALLING);
-    if (err < 0) {
-        LOG_ERR("Could not configure LS LO GPIO interrupt: %d", err);
-        gpio_remove_callback(gpio0_dr_ls, &ls_lo_gpio_cb);
-        goto fail;
-    }
-    
-    int LSUPvalue = gpio_pin_get(gpio0_dr_ls, LIM_SW_UP_PIN);
-    if (LSUPvalue < 0) {
-        LOG_ERR("Could not read LS UP GPIO: %d", LSUPvalue);
-        gpio_pin_interrupt_configure(gpio0_dr_ls, LIM_SW_UP_PIN,
-                                     GPIO_INT_DISABLE);
-        gpio_remove_callback(gpio0_dr_ls, &ls_up_gpio_cb);
-        goto fail;
-    }
-    drv_dig_inputs_set_bit(BIT(LIM_SW_UP_BIT), LSUPvalue != 0);
-
-    int LSLOvalue = gpio_pin_get(gpio0_dr_ls, LIM_SW_LO_PIN);
-    if (LSLOvalue < 0) {
-        LOG_ERR("Could not read LS LO GPIO: %d", LSLOvalue);
-        gpio_pin_interrupt_configure(gpio0_dr_ls, LIM_SW_LO_PIN,
-                                     GPIO_INT_DISABLE);
-        gpio_remove_callback(gpio0_dr_ls, &ls_lo_gpio_cb);
-        goto fail;
-    }
-    drv_dig_inputs_set_bit(BIT(LIM_SW_LO_BIT), LSLOvalue != 0);
-
     // Main loop for housekeeping
     while(true) {
         can_debug_state();
@@ -864,13 +476,13 @@ int main()
         }*/
 
         if (set_error_flags) {
-            adi_to_amc_faults((uint32_t)OD_APP_SHADOW.x212B_GENERAL_ERROR_FLAGS,
+            Set_LloydMD_Fault((uint32_t)OD_APP_SHADOW.x212B_GENERAL_ERROR_FLAGS,
                                (uint32_t)OD_APP_SHADOW.x212C_GDRV_ERROR_FLAGS);
             set_error_flags = false;
         }
 
         if ((0x00 != OD_RAM.x6800_machineType) && (false == machineConfigured)) {
-            configureMachine(OD_RAM.x6800_machineType);
+            conf_LloydMachine(OD_RAM.x6800_machineType);
             machineConfigured = true;
         }
 

@@ -13,6 +13,7 @@ target_sources(app PRIVATE
 	objdict/OD.c
 	src/cia402.c
 	src/tmc9660_params.c
+	src/lloyd_machine.c
 )
 
 zephyr_include_directories(objdict)
